@@ -56,8 +56,9 @@ public class XlassClassLoader extends ClassLoader {
       throw new IllegalArgumentException("class stream is empty");
     }
     byte[] realBytes = new byte[bytes.length];
+    int n = (1 << 8) - 1;
     for (int i = 0; i < realBytes.length; i++) {
-      realBytes[i] = (byte) (255 - bytes[i]);
+      realBytes[i] = (byte) (n ^ bytes[i]);
     }
     return realBytes;
   }
