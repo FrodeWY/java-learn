@@ -28,6 +28,7 @@ public class SocketServerTest3 {
 
   private static void service(Socket socket) {
     try {
+      System.out.println("request service3");
       PrintWriter printWriter = new PrintWriter(socket.getOutputStream(), true);
       printWriter.println("HTTP/1.1 200 OK");
       printWriter.println("Content-Type:text/html;charset=utf-8");

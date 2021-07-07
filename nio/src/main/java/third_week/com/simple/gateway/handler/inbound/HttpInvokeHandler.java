@@ -13,21 +13,21 @@ import third_week.com.simple.gateway.loadbalance.LoadBalance;
 import third_week.com.simple.gateway.result.Result;
 import third_week.com.simple.gateway.router.Router;
 
-import java.net.URL;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
-public class HttpInBoundHandler extends ChannelInboundHandlerAdapter {
+public class HttpInvokeHandler extends ChannelInboundHandlerAdapter {
+
     private LoadBalance loadBalance;
     private Router router;
     private Invoker invoker;
     private FilterChain filterChain;
 
-    public HttpInBoundHandler(LoadBalance loadBalance, Router router, Invoker invoker) {
+    public HttpInvokeHandler(LoadBalance loadBalance, Router router, Invoker invoker) {
         this(loadBalance, router, invoker, null);
     }
 
-    public HttpInBoundHandler(LoadBalance loadBalance, Router router, Invoker invoker, FilterChain filterChain) {
+    public HttpInvokeHandler(LoadBalance loadBalance, Router router, Invoker invoker, FilterChain filterChain) {
         this.loadBalance = loadBalance;
         this.router = router;
         this.invoker = invoker;
@@ -46,20 +46,17 @@ public class HttpInBoundHandler extends ChannelInboundHandlerAdapter {
             if (filterChain != null) {
                 filterChain.preInvoke(fullHttpRequest);
             }
-            final String uri = fullHttpRequest.uri();
-            final String substring = uri.substring(1);
-            String apiPath = substring.substring(substring.indexOf("/"));
-            if (!apiPath.endsWith("/")) {
-                apiPath = apiPath + "/";
-            }
+            String apiPath = getApiPath(fullHttpRequest);
             String backendUrl = endPoint + apiPath;
 
             CompletableFuture.supplyAsync(() -> invoker.get(backendUrl)).whenComplete((v, t) -> {
                 if (t != null) {
                     System.out.println(t.getMessage());
+                    exceptionCaught(ctx, t);
                 }
                 handlerResponse(fullHttpRequest, ctx, v);
             });
+            System.out.println("read end");
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
@@ -69,6 +66,19 @@ public class HttpInBoundHandler extends ChannelInboundHandlerAdapter {
 
     }
 
+    /**
+     * 获取api path
+     */
+    private String getApiPath(FullHttpRequest fullHttpRequest) {
+        final String uri = fullHttpRequest.uri();
+        final String substring = uri.substring(1);
+        String apiPath = substring.substring(substring.indexOf("/"));
+        if (!apiPath.endsWith("/")) {
+            apiPath = apiPath + "/";
+        }
+        return apiPath;
+    }
+
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
         cause.printStackTrace();
@@ -76,7 +86,7 @@ public class HttpInBoundHandler extends ChannelInboundHandlerAdapter {
     }
 
     private void handlerResponse(FullHttpRequest fullRequest, ChannelHandlerContext ctx, Result result) {
-
+        System.out.println("handlerResponse");
         if (result.hasException()) {
             exceptionCaught(ctx, result.getException());
         }

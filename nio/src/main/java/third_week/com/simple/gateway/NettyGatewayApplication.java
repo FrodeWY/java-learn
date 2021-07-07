@@ -5,7 +5,6 @@ import third_week.com.simple.gateway.server.NettyServer;
 public class NettyGatewayApplication {
     public static void main(String[] args) {
         final NettyServer nettyServer = new NettyServer();
-        nettyServer.init();
         nettyServer.run(8004);
     }
 }

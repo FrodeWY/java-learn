@@ -18,45 +18,46 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * HttpClient实现http调用
+ */
 public class HttpClientInvoker implements Invoker {
-    private final HttpClient CLIENT = HttpClientBuilder.create().setMaxConnTotal(40).setMaxConnPerRoute(8).setKeepAliveStrategy((response, context) -> 6000).build();
 
-    public Result doGet(String url) {
-        SyncResult result;
-        try {
-            final URI uri = new URI(url);
-            HttpGet request = new HttpGet(uri);
-            HttpResponse response = CLIENT.execute(request);
-            HttpEntity entity = response.getEntity();
-//            final Map<String, String> headerMap = getHeaderMap(response.getAllHeaders());
-            result = new SyncResult(EntityUtils.toByteArray(entity));
-        } catch (Exception e) {
-            result = new SyncResult(e);
-        }
-        return result;
-    }
+  private static final HttpClient CLIENT;
 
-    private Map<String, String> getHeaderMap(Header[] allHeaders) {
-        Map<String, String> map = new HashMap<>();
-        if (allHeaders == null) {
-            return map;
-        }
-        Arrays.stream(allHeaders).forEach((header) -> map.put(header.getName(), header.getValue()));
-        return map;
-    }
+  static {
+    CLIENT = HttpClientBuilder.create().setMaxConnTotal(40).setMaxConnPerRoute(8)
+        .setKeepAliveStrategy((response, context) -> 6000).build();
+  }
 
-    @Override
-    public Result get(String url) {
-        return doGet(url);
+  public Result doGet(String url) {
+    SyncResult result;
+    HttpGet request;
+    try {
+      final URI uri = new URI(url);
+      request = new HttpGet(uri);
+      HttpResponse response = CLIENT.execute(request);
+      HttpEntity entity = response.getEntity();
+      final Map<String, String> headerMap = getHeaderMap(response.getAllHeaders());
+      result = new SyncResult(EntityUtils.toByteArray(entity), headerMap);
+    } catch (Exception e) {
+      result = new SyncResult(e);
     }
+    return result;
+  }
 
-    @Override
-    public Result post(String url) {
-        throw new UnsupportedOperationException();
+  private Map<String, String> getHeaderMap(Header[] allHeaders) {
+    Map<String, String> map = new HashMap<>();
+    if (allHeaders == null) {
+      return map;
     }
+    Arrays.stream(allHeaders).forEach((header) -> map.put(header.getName(), header.getValue()));
+    return map;
+  }
 
-    @Override
-    public Result delete(String url) {
-        throw new UnsupportedOperationException();
-    }
+  @Override
+  public Result get(String url) {
+    return doGet(url);
+  }
+
 }

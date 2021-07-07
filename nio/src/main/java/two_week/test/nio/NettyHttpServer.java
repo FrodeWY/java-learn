@@ -5,6 +5,7 @@ import io.netty.buffer.PooledByteBufAllocator;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.EventLoopGroup;
+import io.netty.channel.WriteBufferWaterMark;
 import io.netty.channel.epoll.EpollChannelOption;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
@@ -28,7 +29,8 @@ public class NettyHttpServer {
           .childOption(ChannelOption.SO_REUSEADDR, true)
           .childOption(ChannelOption.SO_RCVBUF, 32 * 1024)
           .childOption(ChannelOption.SO_SNDBUF, 32 * 1024)
-//          .childOption(EpollChannelOption.SO_REUSEPORT, true)
+          .childOption(ChannelOption.WRITE_BUFFER_WATER_MARK, new WriteBufferWaterMark(32 * 1024, 64 * 1024))
+          .childOption(EpollChannelOption.SO_REUSEPORT, true)
           .childOption(ChannelOption.SO_KEEPALIVE, true)
           .childOption(ChannelOption.ALLOCATOR, PooledByteBufAllocator.DEFAULT);
 

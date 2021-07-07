@@ -6,10 +6,22 @@ import java.net.URL;
 
 public interface Invoker {
 
-    Result get(String url);
+  default Result get(String url) {
+    throw new UnsupportedOperationException();
+  }
 
-    Result post(String url);
+  ;
 
-    Result delete(String url);
+  default Result post(String url) {
+    throw new UnsupportedOperationException();
+  }
+
+  ;
+
+  default Result delete(String url) {
+    throw new UnsupportedOperationException();
+  }
+
+  ;
 
 }

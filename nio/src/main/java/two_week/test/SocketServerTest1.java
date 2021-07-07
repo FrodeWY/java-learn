@@ -15,7 +15,7 @@ import java.net.Socket;
 public class SocketServerTest1 {
 
   public static void main(String[] args) throws Exception {
-    ServerSocket serverSocket = new ServerSocket(8805);
+    ServerSocket serverSocket = new ServerSocket(8801);
     while (true) {
       Socket accept = serverSocket.accept();
       service(accept);
@@ -23,7 +23,7 @@ public class SocketServerTest1 {
   }
 
   private static void service(Socket socket) throws Exception {
-    System.out.println("start print");
+    System.out.println("request service1");
     PrintWriter printWriter = new PrintWriter(socket.getOutputStream(), true);
     printWriter.println("HTTP/1.1 200 OK");
     printWriter.println("Content-Type:text/html;charset=utf-8");

@@ -26,6 +26,7 @@ public class SocketServerTest2 {
 
     private static void service(Socket socket) {
         try {
+            System.out.println("request service2");
             PrintWriter printWriter = new PrintWriter(socket.getOutputStream(), true);
             printWriter.println("HTTP/1.1 200 OK");
             printWriter.println("Content-Type:text/html;charset=utf-8");
