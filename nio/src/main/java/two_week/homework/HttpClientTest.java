@@ -5,7 +5,9 @@ import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 
 
@@ -19,14 +21,13 @@ import org.apache.http.util.EntityUtils;
 public class HttpClientTest {
 
   public static void main(String[] args) {
-    doGet("http://localhost:8801");
+    doGet("http://localhost:8805/");
   }
 
   public static void doGet(String url) {
+    CloseableHttpClient client = HttpClients.createDefault();
+    HttpGet request = new HttpGet(url);
     try {
-
-      HttpClient client = HttpClientBuilder.create().build();
-      HttpGet request = new HttpGet(url);
       HttpResponse response = client.execute(request);
       int statusCode = response.getStatusLine().getStatusCode();
       if (HttpStatus.SC_OK == statusCode) {
@@ -37,7 +38,14 @@ public class HttpClientTest {
       }
 
     } catch (IOException e) {
-      e.printStackTrace();
+       e.printStackTrace();
+    }finally {
+      request.releaseConnection();
+      try {
+        client.close();
+      } catch (IOException e) {
+        e.printStackTrace();
+      }
     }
 
   }

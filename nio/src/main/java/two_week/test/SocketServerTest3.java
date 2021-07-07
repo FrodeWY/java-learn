@@ -28,7 +28,6 @@ public class SocketServerTest3 {
 
   private static void service(Socket socket) {
     try {
-      Thread.sleep(50);
       PrintWriter printWriter = new PrintWriter(socket.getOutputStream(), true);
       printWriter.println("HTTP/1.1 200 OK");
       printWriter.println("Content-Type:text/html;charset=utf-8");
@@ -39,7 +38,7 @@ public class SocketServerTest3 {
       printWriter.write(body);
       printWriter.close();
       socket.close();
-    } catch (IOException | InterruptedException e) {
+    } catch (IOException e) {
       e.printStackTrace();
     }
   }
