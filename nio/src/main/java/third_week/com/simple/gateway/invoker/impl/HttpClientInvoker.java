@@ -1,19 +1,18 @@
-package third_week.com.simple.gateway.invoker;
+package third_week.com.simple.gateway.invoker.impl;
 
+import io.netty.channel.ChannelHandlerContext;
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
-import org.apache.http.HttpStatus;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.util.EntityUtils;
-import third_week.com.simple.gateway.exception.RequestFailedException;
+import third_week.com.simple.gateway.invoker.Invoker;
 import third_week.com.simple.gateway.result.Result;
 import third_week.com.simple.gateway.result.SyncResult;
 
 import java.net.URI;
-import java.net.URL;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -56,7 +55,7 @@ public class HttpClientInvoker implements Invoker {
   }
 
   @Override
-  public Result get(String url) {
+  public Result get(String url, ChannelHandlerContext ctx) {
     return doGet(url);
   }
 

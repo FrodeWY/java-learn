@@ -18,9 +18,8 @@ import third_week.com.simple.gateway.filter.FilterChain;
 import third_week.com.simple.gateway.filter.HeaderAppendUniqueIdFilter;
 import third_week.com.simple.gateway.handler.inbound.HttpInvokeHandler;
 import third_week.com.simple.gateway.handler.outbound.HttpOutBoundHandler;
-import third_week.com.simple.gateway.invoker.HttpClientInvoker;
-import third_week.com.simple.gateway.invoker.NettyClientInvoker;
-import third_week.com.simple.gateway.invoker.OkHttpInvoker;
+import third_week.com.simple.gateway.invoker.impl.NettyClientInvoker;
+import third_week.com.simple.gateway.invoker.impl.OkHttpInvoker;
 import third_week.com.simple.gateway.loadbalance.RandomLoadBalance;
 import third_week.com.simple.gateway.router.LocalStaticRouter;
 
@@ -58,7 +57,7 @@ public class NettyServer implements Server {
                 .addLast(new HttpObjectAggregator(1024 * 1024))
                 .addLast(new HttpOutBoundHandler())
                 .addLast(new HttpInvokeHandler(new RandomLoadBalance(), new LocalStaticRouter(),
-                    new NettyClientInvoker(), filterChain));
+                    new OkHttpInvoker(), filterChain));
           }
         });
   }
@@ -82,8 +81,4 @@ public class NettyServer implements Server {
     }
   }
 
-  public static void main(String[] args) {
-    final NettyServer nettyServer = new NettyServer();
-    nettyServer.run(8088);
-  }
 }

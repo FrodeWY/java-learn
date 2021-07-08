@@ -15,7 +15,6 @@ import third_week.com.simple.gateway.router.Router;
 
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
-
 public class HttpInvokeHandler extends ChannelInboundHandlerAdapter {
 
     private LoadBalance loadBalance;
@@ -49,14 +48,13 @@ public class HttpInvokeHandler extends ChannelInboundHandlerAdapter {
             String apiPath = getApiPath(fullHttpRequest);
             String backendUrl = endPoint + apiPath;
 
-            CompletableFuture.supplyAsync(() -> invoker.get(backendUrl)).whenComplete((v, t) -> {
+            CompletableFuture.supplyAsync(() -> invoker.get(backendUrl,ctx)).whenComplete((v, t) -> {
                 if (t != null) {
                     System.out.println(t.getMessage());
                     exceptionCaught(ctx, t);
                 }
                 handlerResponse(fullHttpRequest, ctx, v);
             });
-            System.out.println("read end");
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
@@ -72,7 +70,11 @@ public class HttpInvokeHandler extends ChannelInboundHandlerAdapter {
     private String getApiPath(FullHttpRequest fullHttpRequest) {
         final String uri = fullHttpRequest.uri();
         final String substring = uri.substring(1);
-        String apiPath = substring.substring(substring.indexOf("/"));
+        final int beginIndex = substring.indexOf("/");
+        if (beginIndex == -1) {
+            return "/";
+        }
+        String apiPath = substring.substring(beginIndex);
         if (!apiPath.endsWith("/")) {
             apiPath = apiPath + "/";
         }
@@ -87,6 +89,10 @@ public class HttpInvokeHandler extends ChannelInboundHandlerAdapter {
 
     private void handlerResponse(FullHttpRequest fullRequest, ChannelHandlerContext ctx, Result result) {
         System.out.println("handlerResponse");
+        if(result==null){
+            ctx.close();
+            return;
+        }
         if (result.hasException()) {
             exceptionCaught(ctx, result.getException());
         }

@@ -1,16 +1,16 @@
 package third_week.com.simple.gateway.handler.outbound;
 
-import io.netty.channel.ChannelDuplexHandler;
-import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.ChannelOutboundHandlerAdapter;
-import io.netty.channel.ChannelPromise;
-import io.netty.handler.codec.http.DefaultFullHttpResponse;
-import io.netty.handler.codec.http.DefaultHttpResponse;
-import io.netty.handler.codec.http.DefaultLastHttpContent;
+import io.netty.buffer.ByteBuf;
+import io.netty.channel.*;
+import io.netty.handler.codec.http.*;
+
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
+import java.nio.charset.StandardCharsets;
+
 import org.apache.http.HttpResponse;
 import org.apache.http.util.EntityUtils;
+import third_week.com.simple.gateway.feture.DefaultFuture;
 
 /**
  * @author wangyang
@@ -21,31 +21,25 @@ import org.apache.http.util.EntityUtils;
  */
 public class NettyClientInvokeHandler extends ChannelDuplexHandler {
 
-  @Override
-  public void write(ChannelHandlerContext ctx, Object msg, ChannelPromise promise) throws Exception {
-    super.write(ctx, msg, promise);
-    System.out.println("write ....");
-  }
-
-  @Override
-  public void connect(ChannelHandlerContext ctx, SocketAddress remoteAddress, SocketAddress localAddress, ChannelPromise promise) throws Exception {
-    super.connect(ctx, remoteAddress, localAddress, promise);
-    InetSocketAddress address = (InetSocketAddress) remoteAddress;
-    System.out.println("connect  " + address);
-  }
-
-  @Override
-  public void read(ChannelHandlerContext ctx) throws Exception {
-    super.read(ctx);
-    System.out.println("read...");
-  }
-
-  @Override
-  public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-    super.channelRead(ctx, msg);
-    if (msg instanceof DefaultHttpResponse) {
-      DefaultHttpResponse response = (DefaultHttpResponse) msg;
-      System.out.println("receive result:" + response.decoderResult().toString());
+    @Override
+    public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
+        try {
+            FullHttpResponse response = (FullHttpResponse) msg;
+            DefaultFuture future = DefaultFuture.getFuture(ctx.channel().id().asLongText());
+            future.complete(response);
+        } finally {
+            ctx.flush();
+        }
     }
-  }
+
+    @Override
+    public void disconnect(ChannelHandlerContext ctx, ChannelPromise promise) throws Exception {
+        ctx.close();
+    }
+
+    @Override
+    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
+        cause.printStackTrace();
+        ctx.close();
+    }
 }

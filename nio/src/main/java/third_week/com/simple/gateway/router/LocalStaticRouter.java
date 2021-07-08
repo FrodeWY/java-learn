@@ -5,6 +5,7 @@ import io.netty.handler.codec.http.FullHttpRequest;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -19,13 +20,15 @@ public class LocalStaticRouter extends AbstractRouter {
     static {
         ArrayList<String> helloWorldServerUrl = new ArrayList<>();
         try {
-            helloWorldServerUrl.add("http://127.0.0.1:8801");
-            helloWorldServerUrl.add("http://127.0.0.1:8802");
-            helloWorldServerUrl.add("http://127.0.0.1:8803");
+            helloWorldServerUrl.add("http://localhost:8801");
+            helloWorldServerUrl.add("http://localhost:8802");
+            helloWorldServerUrl.add("http://localhost:8803");
         } catch (Exception e) {
             e.printStackTrace();
         }
         BACKEND_SERVER_CACHE.put("helloWorld", helloWorldServerUrl);
+        BACKEND_SERVER_CACHE.put("nettyServer", Collections.singletonList("http://localhost:8808"));
+
     }
 
     @Override

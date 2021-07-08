@@ -1,10 +1,12 @@
-package third_week.com.simple.gateway.invoker;
+package third_week.com.simple.gateway.invoker.impl;
 
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
+
+import io.netty.channel.ChannelHandlerContext;
 import kotlin.Pair;
 import okhttp3.Call;
 import okhttp3.ConnectionPool;
@@ -14,6 +16,7 @@ import okhttp3.Request;
 import okhttp3.Request.Builder;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
+import third_week.com.simple.gateway.invoker.Invoker;
 import third_week.com.simple.gateway.result.Result;
 import third_week.com.simple.gateway.result.SyncResult;
 
@@ -38,7 +41,7 @@ public class OkHttpInvoker implements Invoker {
   }
 
   @Override
-  public Result get(String url) {
+  public Result get(String url, ChannelHandlerContext ctx) {
     SyncResult result;
     Request getRequest = new Builder().url(url).get().build();
     Call call = CLIENT.newCall(getRequest);

@@ -32,6 +32,7 @@ public class SocketServerTest1 {
     //http 协议分为报文头和报文体,中间由两个换行符隔开相当于有一个空行
     printWriter.println();
     printWriter.write(body);
+//    printWriter.flush();
     printWriter.close();
     socket.close();
   }
