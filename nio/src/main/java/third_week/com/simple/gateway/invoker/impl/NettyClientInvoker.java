@@ -12,7 +12,7 @@ import io.netty.handler.codec.http.HttpObjectAggregator;
 import java.util.concurrent.ConcurrentHashMap;
 import org.jetbrains.annotations.NotNull;
 import third_week.com.simple.gateway.future.DefaultFuture;
-import third_week.com.simple.gateway.handler.outbound.NettyClientInvokeHandler;
+import third_week.com.simple.gateway.handler.inbound.NettyClientInvokeHandler;
 import third_week.com.simple.gateway.invoker.Invoker;
 import third_week.com.simple.gateway.result.Result;
 import third_week.com.simple.gateway.result.impl.SyncResult;

@@ -16,11 +16,9 @@ import io.netty.handler.logging.LoggingHandler;
 import third_week.com.simple.gateway.filter.impl.ElapsedTimeStatisticsFilter;
 import third_week.com.simple.gateway.filter.FilterChain;
 import third_week.com.simple.gateway.filter.impl.HeaderAppendUniqueIdFilter;
-import third_week.com.simple.gateway.handler.inbound.HttpInvokeHandler;
-import third_week.com.simple.gateway.handler.outbound.HttpOutBoundHandler;
+import third_week.com.simple.gateway.handler.inbound.NettyServerChannelInBoundHandler;
+import third_week.com.simple.gateway.handler.outbound.NettyServerChannelOutBoundHandler;
 import third_week.com.simple.gateway.invoker.impl.HttpClientInvoker;
-import third_week.com.simple.gateway.invoker.impl.NettyClientInvoker;
-import third_week.com.simple.gateway.invoker.impl.OkHttpInvoker;
 import third_week.com.simple.gateway.loadbalance.impl.RandomLoadBalance;
 import third_week.com.simple.gateway.router.impl.LocalStaticRouter;
 import third_week.com.simple.gateway.server.Server;
@@ -57,8 +55,8 @@ public class NettyServer implements Server {
             ch.pipeline()
                 .addLast(new HttpServerCodec())
                 .addLast(new HttpObjectAggregator(1024 * 1024))
-                .addLast(new HttpOutBoundHandler())
-                .addLast(new HttpInvokeHandler(new RandomLoadBalance(), new LocalStaticRouter(),
+                .addLast(new NettyServerChannelOutBoundHandler())
+                .addLast(new NettyServerChannelInBoundHandler(new RandomLoadBalance(), new LocalStaticRouter(),
                     new HttpClientInvoker(), filterChain));
           }
         });

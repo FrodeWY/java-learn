@@ -8,7 +8,6 @@ import io.netty.handler.codec.http.*;
 import io.netty.util.ReferenceCountUtil;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.Executor;
-import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -17,7 +16,6 @@ import org.jetbrains.annotations.NotNull;
 import third_week.com.simple.gateway.exception.RequestFailedException;
 import third_week.com.simple.gateway.filter.FilterChain;
 import third_week.com.simple.gateway.invoker.Invoker;
-import third_week.com.simple.gateway.invoker.impl.NettyClientInvoker;
 import third_week.com.simple.gateway.loadbalance.LoadBalance;
 import third_week.com.simple.gateway.result.Result;
 import third_week.com.simple.gateway.router.Router;
@@ -25,7 +23,7 @@ import third_week.com.simple.gateway.router.Router;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
-public class HttpInvokeHandler extends ChannelInboundHandlerAdapter {
+public class NettyServerChannelInBoundHandler extends ChannelInboundHandlerAdapter {
 
   private LoadBalance loadBalance;
   private Router router;
@@ -42,18 +40,19 @@ public class HttpInvokeHandler extends ChannelInboundHandlerAdapter {
     defaultExecutor = new ThreadPoolExecutor(corePoolSize, corePoolSize * 2 + 2, 60, TimeUnit.SECONDS, workQueue, threadFactory);
   }
 
-  public HttpInvokeHandler(LoadBalance loadBalance, Router router, Invoker invoker) {
+  public NettyServerChannelInBoundHandler(LoadBalance loadBalance, Router router, Invoker invoker) {
     this(loadBalance, router, invoker, null, defaultExecutor);
   }
-  public HttpInvokeHandler(LoadBalance loadBalance, Router router, Invoker invoker,FilterChain filterChain) {
+
+  public NettyServerChannelInBoundHandler(LoadBalance loadBalance, Router router, Invoker invoker, FilterChain filterChain) {
     this(loadBalance, router, invoker, filterChain, defaultExecutor);
   }
 
-  public HttpInvokeHandler(LoadBalance loadBalance, Router router, Invoker invoker, Executor executor) {
+  public NettyServerChannelInBoundHandler(LoadBalance loadBalance, Router router, Invoker invoker, Executor executor) {
     this(loadBalance, router, invoker, null, executor);
   }
 
-  public HttpInvokeHandler(LoadBalance loadBalance, Router router, Invoker invoker, FilterChain filterChain, Executor executor) {
+  public NettyServerChannelInBoundHandler(LoadBalance loadBalance, Router router, Invoker invoker, FilterChain filterChain, Executor executor) {
     this.loadBalance = loadBalance;
     this.router = router;
     this.invoker = invoker;
