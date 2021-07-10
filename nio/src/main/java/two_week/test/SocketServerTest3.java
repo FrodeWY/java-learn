@@ -37,9 +37,9 @@ public class SocketServerTest3 {
       //http 协议分为报文头和报文体,中间由两个换行符隔开相当于有一个空行
       printWriter.println();
       printWriter.write(body);
-//      printWriter.flush();
-      printWriter.close();
-      socket.close();
+      printWriter.flush();
+//      printWriter.close();
+//      socket.close();
     } catch (IOException e) {
       e.printStackTrace();
     }

@@ -1,4 +1,4 @@
-package third_week.com.simple.gateway.router;
+package third_week.com.simple.gateway.router.impl;
 
 import io.netty.handler.codec.http.FullHttpRequest;
 
@@ -9,6 +9,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import third_week.com.simple.gateway.router.AbstractRouter;
 
 /**
  * 一个本地静态路由

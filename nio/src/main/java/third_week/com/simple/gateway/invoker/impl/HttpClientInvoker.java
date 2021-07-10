@@ -6,11 +6,12 @@ import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.util.EntityUtils;
 import third_week.com.simple.gateway.invoker.Invoker;
 import third_week.com.simple.gateway.result.Result;
-import third_week.com.simple.gateway.result.SyncResult;
+import third_week.com.simple.gateway.result.impl.SyncResult;
 
 import java.net.URI;
 import java.util.Arrays;
@@ -22,7 +23,7 @@ import java.util.Map;
  */
 public class HttpClientInvoker implements Invoker {
 
-  private static final HttpClient CLIENT;
+  private static final CloseableHttpClient CLIENT;
 
   static {
     CLIENT = HttpClientBuilder.create().setMaxConnTotal(40).setMaxConnPerRoute(8)
@@ -31,7 +32,7 @@ public class HttpClientInvoker implements Invoker {
 
   public Result doGet(String url) {
     SyncResult result;
-    HttpGet request;
+    HttpGet request=null;
     try {
       final URI uri = new URI(url);
       request = new HttpGet(uri);
@@ -41,6 +42,10 @@ public class HttpClientInvoker implements Invoker {
       result = new SyncResult(EntityUtils.toByteArray(entity), headerMap);
     } catch (Exception e) {
       result = new SyncResult(e);
+    }finally {
+      if(request!=null){
+        request.releaseConnection();
+      }
     }
     return result;
   }

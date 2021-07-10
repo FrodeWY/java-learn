@@ -1,16 +1,10 @@
 package third_week.com.simple.gateway.handler.outbound;
 
-import io.netty.buffer.ByteBuf;
-import io.netty.channel.*;
-import io.netty.handler.codec.http.*;
-
-import java.net.InetSocketAddress;
-import java.net.SocketAddress;
-import java.nio.charset.StandardCharsets;
-
-import org.apache.http.HttpResponse;
-import org.apache.http.util.EntityUtils;
-import third_week.com.simple.gateway.feture.DefaultFuture;
+import io.netty.channel.ChannelDuplexHandler;
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.ChannelPromise;
+import io.netty.handler.codec.http.FullHttpResponse;
+import third_week.com.simple.gateway.future.DefaultFuture;
 
 /**
  * @author wangyang

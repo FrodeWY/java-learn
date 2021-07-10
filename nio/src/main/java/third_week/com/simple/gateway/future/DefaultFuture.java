@@ -1,4 +1,4 @@
-package third_week.com.simple.gateway.feture;
+package third_week.com.simple.gateway.future;
 
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
@@ -16,6 +16,14 @@ public class DefaultFuture extends CompletableFuture {
         this.ctx = ctx;
         this.channel = channel;
         futureCache.put(channel.id().asLongText(), this);
+    }
+
+    public ChannelHandlerContext getCtx() {
+        return ctx;
+    }
+
+    public Channel getChannel() {
+        return channel;
     }
 
     public static DefaultFuture getFuture(String channelId) {

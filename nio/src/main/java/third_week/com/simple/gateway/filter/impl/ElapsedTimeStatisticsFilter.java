@@ -1,10 +1,11 @@
-package third_week.com.simple.gateway.filter;
+package third_week.com.simple.gateway.filter.impl;
 
 import io.netty.handler.codec.http.FullHttpRequest;
 import io.netty.handler.codec.http.FullHttpResponse;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import third_week.com.simple.gateway.filter.Filter;
 
 /**
  * 接口耗时统计过滤器
@@ -22,7 +23,7 @@ public class ElapsedTimeStatisticsFilter implements Filter {
     public void onResponse(FullHttpRequest request, FullHttpResponse response) {
         final String requestUniqueId = request.headers().get(HeaderAppendUniqueIdFilter.X_UNIQUE_ID);
         final Long startTime = cache.get(requestUniqueId);
-        System.out.println("request unique id:"+requestUniqueId+"elapsed time:"+(System.currentTimeMillis()-startTime));
+        System.out.println("request unique id:"+requestUniqueId+" elapsed time:"+(System.currentTimeMillis()-startTime));
     }
 
     @Override

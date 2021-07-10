@@ -16,9 +16,10 @@ import okhttp3.Request;
 import okhttp3.Request.Builder;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
+import okhttp3.internal.connection.RealCall;
 import third_week.com.simple.gateway.invoker.Invoker;
 import third_week.com.simple.gateway.result.Result;
-import third_week.com.simple.gateway.result.SyncResult;
+import third_week.com.simple.gateway.result.impl.SyncResult;
 
 /**
  * @author wangyang
@@ -44,7 +45,7 @@ public class OkHttpInvoker implements Invoker {
   public Result get(String url, ChannelHandlerContext ctx) {
     SyncResult result;
     Request getRequest = new Builder().url(url).get().build();
-    Call call = CLIENT.newCall(getRequest);
+    RealCall call = (RealCall)CLIENT.newCall(getRequest);
     try {
       Response execute = call.execute();
       Headers headers = execute.headers();

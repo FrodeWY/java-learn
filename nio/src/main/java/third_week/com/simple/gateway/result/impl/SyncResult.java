@@ -1,8 +1,9 @@
-package third_week.com.simple.gateway.result;
+package third_week.com.simple.gateway.result.impl;
 
 import org.apache.http.Header;
 
 import java.util.Map;
+import third_week.com.simple.gateway.result.Result;
 
 /**
  * 同步调用结果

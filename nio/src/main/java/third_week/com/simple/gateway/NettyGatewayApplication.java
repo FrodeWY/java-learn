@@ -1,6 +1,6 @@
 package third_week.com.simple.gateway;
 
-import third_week.com.simple.gateway.server.NettyServer;
+import third_week.com.simple.gateway.server.impl.NettyServer;
 
 public class NettyGatewayApplication {
     public static void main(String[] args) {

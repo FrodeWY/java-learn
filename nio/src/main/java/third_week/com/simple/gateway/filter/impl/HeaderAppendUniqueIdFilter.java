@@ -1,9 +1,10 @@
-package third_week.com.simple.gateway.filter;
+package third_week.com.simple.gateway.filter.impl;
 
 import io.netty.handler.codec.http.FullHttpRequest;
 import io.netty.handler.codec.http.FullHttpResponse;
 
 import java.util.UUID;
+import third_week.com.simple.gateway.filter.Filter;
 
 /**
  * 添加唯一id过滤器

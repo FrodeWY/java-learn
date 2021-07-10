@@ -1,4 +1,4 @@
-package third_week.com.simple.gateway.server;
+package third_week.com.simple.gateway.server.impl;
 
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.buffer.PooledByteBufAllocator;
@@ -13,15 +13,17 @@ import io.netty.handler.codec.http.HttpObjectAggregator;
 import io.netty.handler.codec.http.HttpServerCodec;
 import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
-import third_week.com.simple.gateway.filter.ElapsedTimeStatisticsFilter;
+import third_week.com.simple.gateway.filter.impl.ElapsedTimeStatisticsFilter;
 import third_week.com.simple.gateway.filter.FilterChain;
-import third_week.com.simple.gateway.filter.HeaderAppendUniqueIdFilter;
+import third_week.com.simple.gateway.filter.impl.HeaderAppendUniqueIdFilter;
 import third_week.com.simple.gateway.handler.inbound.HttpInvokeHandler;
 import third_week.com.simple.gateway.handler.outbound.HttpOutBoundHandler;
+import third_week.com.simple.gateway.invoker.impl.HttpClientInvoker;
 import third_week.com.simple.gateway.invoker.impl.NettyClientInvoker;
 import third_week.com.simple.gateway.invoker.impl.OkHttpInvoker;
-import third_week.com.simple.gateway.loadbalance.RandomLoadBalance;
-import third_week.com.simple.gateway.router.LocalStaticRouter;
+import third_week.com.simple.gateway.loadbalance.impl.RandomLoadBalance;
+import third_week.com.simple.gateway.router.impl.LocalStaticRouter;
+import third_week.com.simple.gateway.server.Server;
 
 public class NettyServer implements Server {
 
@@ -57,7 +59,7 @@ public class NettyServer implements Server {
                 .addLast(new HttpObjectAggregator(1024 * 1024))
                 .addLast(new HttpOutBoundHandler())
                 .addLast(new HttpInvokeHandler(new RandomLoadBalance(), new LocalStaticRouter(),
-                    new OkHttpInvoker(), filterChain));
+                    new HttpClientInvoker(), filterChain));
           }
         });
   }
