@@ -31,5 +31,5 @@
 
   
 
-- 当前网关端口8004,通过访问http://localhost:8004/helloWorld/请求helloWorld服务
+- 当前网关端口8004,通过访问http://localhost:8004/helloWorld/  请求helloWorld服务
 
