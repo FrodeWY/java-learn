@@ -11,6 +11,7 @@
   <modules>
     <module>jvm</module>
     <module>nio</module>
+    <module>concurrence</module>
   </modules>
 
 
