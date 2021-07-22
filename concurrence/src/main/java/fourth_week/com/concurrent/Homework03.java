@@ -44,6 +44,7 @@ public class Homework03 {
     //3
 //        Future<Integer> futureTask = threadPoolExecutor.submit(Homework03::sum);
 //        Integer result = futureTask.get();
+
     //4
 //    ResultHolder resultHolder = new ResultHolder();
 //    Thread thread = new Thread(() -> resultHolder.setResult(sum()));
