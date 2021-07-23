@@ -1,4 +1,4 @@
-package com.spring.pojo;
+package com.pojo;
 
 /**
  * @author wangyang
