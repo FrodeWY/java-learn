@@ -10,14 +10,14 @@ import java.util.regex.Pattern;
  * @Date 2021/7/24 上午11:41
  * @Version 1.0
  */
-public class BeforeAdvice extends BaseAdvice {
+public class AroundAdvice extends BaseAdvice {
 
-  public BeforeAdvice(Method method, Object instance, Pattern methodPattern, Pattern classPattern, int order) {
+  public AroundAdvice(Method method, Object instance, Pattern methodPattern, Pattern classPattern, int order) {
     super(method, instance, methodPattern, classPattern, order);
   }
 
   @Override
-  public boolean isBefore() {
+  public boolean isAround() {
     return true;
   }
 }

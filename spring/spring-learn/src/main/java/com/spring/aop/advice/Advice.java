@@ -1,6 +1,21 @@
 package com.spring.aop.advice;
 
-public interface Advice {
+import com.spring.aop.joinpoint.MyJoinPoint;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import org.springframework.core.Ordered;
 
-    void invoke(Object[] args) throws Exception;
+public interface Advice extends Ordered {
+
+  void invoke(MyJoinPoint myJoinPoint) throws InvocationTargetException, IllegalAccessException;
+
+  boolean methodMatch(Method method);
+
+  boolean classMatch(Class<?> target);
+
+  boolean isBefore();
+
+  boolean isAfter();
+
+  boolean isAround();
 }

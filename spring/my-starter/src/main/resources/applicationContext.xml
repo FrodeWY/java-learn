@@ -4,8 +4,8 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
 
-    <bean id="studentTwo" class="com.spring.learn.starter.pojo.Student">
-        <property name="id" value="2"/>
-        <property name="name" value="two"/>
+    <bean id="studentTwo" class="com.learn.starter.pojo.Student">
+      <property name="id" value="2"/>
+      <property name="name" value="two"/>
     </bean>
 </beans>
