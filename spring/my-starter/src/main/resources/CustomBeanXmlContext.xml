@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<customBeans>
+  <bean name="studentThree" class="com.learn.starter.pojo.Student">
+    <property name="id" value="33"/>
+    <property name="name" value="three"/>
+  </bean>
+</customBeans>

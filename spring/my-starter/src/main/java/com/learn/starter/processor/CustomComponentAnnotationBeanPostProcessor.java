@@ -1,5 +1,6 @@
-package com.learn.starter.annotation;
+package com.learn.starter.processor;
 
+import com.learn.starter.annotation.CustomComponent;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;

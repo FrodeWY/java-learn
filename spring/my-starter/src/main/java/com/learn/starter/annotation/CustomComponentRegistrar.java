@@ -1,5 +1,6 @@
 package com.learn.starter.annotation;
 
+import com.learn.starter.processor.CustomComponentAnnotationBeanPostProcessor;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.support.AbstractBeanDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;

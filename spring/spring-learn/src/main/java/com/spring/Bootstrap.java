@@ -18,7 +18,7 @@ import java.io.IOException;
 public class Bootstrap {
     public static void main(String[] args) throws IOException {
         final ConfigurableApplicationContext applicationContext = new SpringApplicationBuilder(Bootstrap.class).web(WebApplicationType.NONE)
-            .run(args);
+            .profiles().run(args);
         SendService sendService = applicationContext.getBean(SendService.class);
         sendService.send("林生");
         sendService.send2("莉莉");
