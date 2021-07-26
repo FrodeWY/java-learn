@@ -8,39 +8,39 @@
     <version>1.0-SNAPSHOT</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
-<profiles>
-  <profile>
-    <id>dev</id>
-    <properties>
-      <hello>world dev</hello>
-    </properties>
-    <activation>
-      <activeByDefault>true</activeByDefault>
-    </activation>
-  </profile>
-  <profile>
-    <id>test</id>
-    <properties>
-      <hello>world test</hello>
-    </properties>
-  </profile>
+  <profiles>
+    <profile>
+      <id>dev</id>
+      <properties>
+        <hello>world dev</hello>
+      </properties>
+      <activation>
+        <activeByDefault>true</activeByDefault>
+      </activation>
+    </profile>
+    <profile>
+      <id>test</id>
+      <properties>
+        <hello>world test</hello>
+      </properties>
+    </profile>
 
-</profiles>
+  </profiles>
   <artifactId>spring-learn</artifactId>
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <configuration>
-                    <source>8</source>
-                    <target>8</target>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <source>8</source>
+          <target>8</target>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
 
-    <dependencies>
+  <dependencies>
     <dependency>
       <groupId>org.example</groupId>
       <artifactId>my-starter</artifactId>
@@ -50,11 +50,6 @@
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter</artifactId>
     </dependency>
-    <!--    <dependency>-->
-    <!--      <groupId>org.springframework</groupId>-->
-    <!--      <artifactId>spring-jdbc</artifactId>-->
-    <!--      <version>5.1.2.RELEASE</version>-->
-    <!--    </dependency>-->
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-jdbc</artifactId>
@@ -64,6 +59,11 @@
       <groupId>mysql</groupId>
       <artifactId>mysql-connector-java</artifactId>
       <version>5.1.47</version>
+    </dependency>
+    <dependency>
+      <groupId>org.projectlombok</groupId>
+      <artifactId>lombok</artifactId>
+      <version>1.18.12</version>
     </dependency>
   </dependencies>
 
