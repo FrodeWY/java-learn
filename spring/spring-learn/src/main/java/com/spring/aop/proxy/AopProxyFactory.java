@@ -15,7 +15,7 @@ public interface AopProxyFactory {
   /**
    * 获取Aop代理对象
    */
-  Object getProxy();
+  Object getProxy() throws IllegalAccessException, InstantiationException;
 
   /**
    * 将Advice转换成MyMethodInterceptor

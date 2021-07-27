@@ -1,4 +1,4 @@
-package third_week.com.simple.gateway.router;
+package com.simple.gateway.router;
 
 public abstract class AbstractRouter implements Router {
 

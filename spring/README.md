@@ -42,6 +42,7 @@
 - com.spring.aop.process.MyAspectBeanPostProcessor
 
   > 使用MyAspectBeanPostProcessor 找到和切点相匹配Bean,通过MyAspectProxyCreator并找到可以使用的Advice,将Advice转换成MyMethodInterceptor ,将可以使用MyMethodInterceptor 织入到目标对象生成代理对象proxy
+  > 提供了3种代理工厂:ByteBuddyAopProxy  CGLibDynamicAopProxy  JdkDynamicAopProxy
 
 - com.spring.aop.process.MyAspectProxyCreator
 
