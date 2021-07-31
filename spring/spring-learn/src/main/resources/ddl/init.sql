@@ -1,4 +1,4 @@
-create schema geek collate utf8mb4_0900_ai_ci;
+create schema geek collate utf8mb4_general_ci;
 
 create table person
 (
