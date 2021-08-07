@@ -82,7 +82,7 @@ public class PersonJdbcDao implements BaseDao<Person> {
     }
 
     protected Connection  getConnection() throws ClassNotFoundException, SQLException {
-        Class.forName("com.mysql.jdbc.Driver");
+//        Class.forName("com.mysql.jdbc.Driver");
         return DriverManager.getConnection(URL, USER, PASSWORD);
     }
 
@@ -93,8 +93,8 @@ public class PersonJdbcDao implements BaseDao<Person> {
 
     public static void main(String[] args) throws Exception {
         PersonJdbcDao personJdbcDao = new PersonJdbcDao();
-//        Person person = personJdbcDao.getByPrimaryKey(1L);
-//        System.out.println("select person:" + person);
+        Person person = personJdbcDao.getByPrimaryKey(1L);
+        System.out.println("select person:" + person);
 //
 //        person.setAge(person.getAge() + 1);
 //        person.setName("update name");

@@ -1,0 +1,66 @@
+spring:
+  shardingsphere:
+    props:
+      sql:
+        show: true
+    datasource:
+      names: m1,s1,s2
+      m1:
+        type: com.zaxxer.hikari.HikariDataSource
+        driver-class-name: com.mysql.jdbc.Driver
+        jdbc-url: jdbc:mysql://localhost:3316/order?characterEncoding=utf-8&useSSL=false
+        username: root
+        password: 123456
+        auto-commit: false
+        maximum-pool-size: 100
+        idle-timeout: 60000
+        max-lifetime: 25200000
+        minimum-idle: 20
+        connection-timeout: 10000
+        pool-name: m1-pool
+        connection-test-query: select 1
+      s1:
+        type: com.zaxxer.hikari.HikariDataSource
+        driver-class-name: com.mysql.jdbc.Driver
+        jdbc-url: jdbc:mysql://localhost:3326/order?characterEncoding=utf-8&useSSL=false
+        username: root
+        password: 123456
+        maximum-pool-size: 100
+        idle-timeout: 60000
+        max-lifetime: 25200000
+        minimum-idle: 20
+        connection-timeout: 10000
+        pool-name: s1-pool
+        connection-test-query: select 1
+      s2:
+        type: com.zaxxer.hikari.HikariDataSource
+        driver-class-name: com.mysql.jdbc.Driver
+        jdbc-url: jdbc:mysql://localhost:3336/order?characterEncoding=utf-8&useSSL=false
+        username: root
+        password: 123456
+        maximum-pool-size: 100
+        idle-timeout: 60000
+        max-lifetime: 25200000
+        minimum-idle: 20
+        connection-timeout: 10000
+        pool-name: s1-pool
+        connection-test-query: select 1
+    rules:
+      readwrite-splitting:
+        data-sources:
+          logic-datasource:  #读写分离逻辑数据源名称
+            writeDataSourceName: m1 # 写库数据源名称
+            readDataSourceNames:
+              - s1
+              - s2
+            loadBalancerName: random-loadbalance
+        loadBalancers:
+          random-loadbalance:
+            type: RANDOM
+
+mybatis:
+  mapper-locations: classpath:mapper/*.xml
+  configuration:
+    map-underscore-to-camel-case: true
+server:
+  port: 8081
