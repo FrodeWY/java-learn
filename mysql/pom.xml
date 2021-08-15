@@ -16,6 +16,7 @@
     <module>read-write-splitting-starter</module>
     <module>read-write02</module>
     <module>read-write03</module>
+    <module>sharding</module>
   </modules>
   <properties>
     <java.version>1.8</java.version>

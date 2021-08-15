@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <parent>
+    <artifactId>mysql</artifactId>
+    <groupId>org.example</groupId>
+    <version>1.0-SNAPSHOT</version>
+  </parent>
+  <modelVersion>4.0.0</modelVersion>
+
+  <artifactId>sharding</artifactId>
+  <properties>
+    <shardingsphere.version>5.0.0-beta</shardingsphere.version>
+    <narayana.version>5.9.1.Final</narayana.version>
+    <jboss-transaction-spi.version>7.6.0.Final</jboss-transaction-spi.version>
+    <jboss-logging.version>3.2.1.Final</jboss-logging.version>
+  </properties>
+  <dependencies>
+    <dependency>
+      <groupId>org.mybatis.spring.boot</groupId>
+      <artifactId>mybatis-spring-boot-starter</artifactId>
+      <version>2.1.4</version>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-web</artifactId>
+      <version>${spring.boot.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.shardingsphere</groupId>
+      <artifactId>shardingsphere-jdbc-core-spring-boot-starter</artifactId>
+      <version>${shardingsphere.version}</version>
+    </dependency>
+    <!-- 使用 XA 事务时，需要引入此模块 -->
+    <dependency>
+      <groupId>org.apache.shardingsphere</groupId>
+      <artifactId>shardingsphere-transaction-xa-core</artifactId>
+      <version>${shardingsphere.version}</version>
+    </dependency>
+
+    <!-- 使用 BASE 事务时，需要引入此模块 -->
+    <!--    <dependency>-->
+    <!--      <groupId>org.apache.shardingsphere</groupId>-->
+    <!--      <artifactId>shardingsphere-transaction-base-seata-at</artifactId>-->
+    <!--      <version>${shardingsphere.version}</version>-->
+    <!--    </dependency>-->
+
+    <!--narayana  start-->
+    <dependency>
+      <groupId>org.apache.shardingsphere</groupId>
+      <artifactId>shardingsphere-transaction-xa-narayana</artifactId>
+      <version>${shardingsphere.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.narayana.jta</groupId>
+      <artifactId>jta</artifactId>
+      <version>${narayana.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.narayana.jts</groupId>
+      <artifactId>narayana-jts-integration</artifactId>
+      <version>${narayana.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss</groupId>
+      <artifactId>jboss-transaction-spi</artifactId>
+      <version>${jboss-transaction-spi.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.logging</groupId>
+      <artifactId>jboss-logging</artifactId>
+      <version>${jboss-logging.version}</version>
+    </dependency>
+    <!--narayana  end-->
+
+    <dependency>
+      <groupId>mysql</groupId>
+      <artifactId>mysql-connector-java</artifactId>
+      <version>5.1.47</version>
+    </dependency>
+    <dependency>
+      <groupId>org.projectlombok</groupId>
+      <artifactId>lombok</artifactId>
+      <version>1.18.12</version>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <source>8</source>
+          <target>8</target>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+</project>

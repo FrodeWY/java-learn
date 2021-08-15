@@ -373,7 +373,7 @@ create table if not exists `order`.`order`
 (
     id              bigint                     not null
         primary key,
-    order_id        varchar(100)               not null comment '订单id',
+    order_id        bigint                     not null comment '订单id',
     buyer_member_id bigint                     not null comment '买家会员id',
     parent_order_id varchar(100)               null comment '父订单id',
     order_amount    varchar(50)                not null comment '订单金额',
@@ -400,7 +400,7 @@ create table if not exists `order`.`order`
 create table if not exists `order`.order_activity
 (
     id              bigint      null,
-    order_id        varchar(50) not null comment '订单id',
+    order_id        bigint      not null comment '订单id',
     activity_id     bigint      not null comment '活动id',
     discount_amount varchar(50) null comment '折扣金额',
     exchange_score  int         null comment '赠送积分',
@@ -432,7 +432,7 @@ create table if not exists `order`.order_detail
 (
     id                  bigint                    not null
         primary key,
-    order_id            varchar(100)              not null comment '订单id',
+    order_id            bigint                    not null comment '订单id',
     sku_code            varchar(50)               not null comment 'sku 编码',
     quantity            int                       not null comment '数量',
     unit_price          varchar(50)               not null comment '单价',
@@ -453,7 +453,7 @@ create table if not exists `order`.order_pay
 (
     id                      bigint                    not null
         primary key,
-    order_id                varchar(50)               not null comment '订单id',
+    order_id                bigint                    not null comment '订单id',
     pay_type                int                       not null comment '支付方式(101:微信支付,102:支付宝支付,103:银联支付...)',
     pay_amount              varchar(50)               not null comment '支付金额',
     currency                varchar(20) default 'CNY' not null comment '币种',
@@ -472,8 +472,8 @@ create table if not exists `order`.return_order
 (
     id              bigint                    not null
         primary key,
-    origin_order_id varchar(50)               null comment '原始正向单单号',
-    return_order_id varchar(50)               not null comment '退货单单号',
+    origin_order_id bigint                    null comment '原始正向单单号',
+    return_order_id bigint                    not null comment '退货单单号',
     return_amount   varchar(50)               not null comment '退款金额',
     return_score    int         default 0     null comment '退回积分值(如果正向单中使用了积分抵扣,要退回)',
     return_type     tinyint                   not null comment '退款类型(1:仅退款,2:退货退款)',
@@ -509,7 +509,7 @@ create table if not exists `order`.return_order_detail
 (
     id              bigint                     not null
         primary key,
-    return_order_id varchar(100)               not null comment '逆向订单id',
+    return_order_id bigint                     not null comment '逆向订单id',
     sku_code        varchar(50)                not null comment 'sku 编码',
     quantity        int                        not null comment '数量',
     tax_amount      varchar(50) default '0.00' null comment '税费',
@@ -528,7 +528,7 @@ create table if not exists `order`.return_order_refund
 (
     id                         bigint                    not null
         primary key,
-    return_order_id            varchar(50)               not null comment '逆向订单id',
+    return_order_id            bigint                    not null comment '逆向订单id',
     return_refund_type         int                       not null comment '退款方式(101:微信支付,102:支付宝支付,103:银联支付...)',
     refund_amount              varchar(50)               not null comment '退款金额',
     currency                   varchar(20) default 'CNY' not null comment '币种',
