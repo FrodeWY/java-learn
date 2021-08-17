@@ -70,7 +70,7 @@ public class RpcfxServerApplication {
 	}
 
 	@Bean
-	public RpcfxInvoker createInvoker(@Autowired RpcfxResolver resolver, @Autowired List<Filter> filterList ){
+	public RpcfxInvoker createInvoker(@Autowired RpcfxResolver resolver, @Autowired List<Filter> filterList){
 		return new RpcfxInvoker(resolver,filterList);
 	}
 
