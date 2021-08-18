@@ -17,6 +17,7 @@
 		<module>rpcfx-demo-api</module>
 		<module>rpcfx-demo-consumer</module>
 		<module>rpcfx-demo-provider</module>
+		<module>rpcfx-core-autoconfigure</module>
 	</modules>
 
 	<properties>
@@ -25,31 +26,6 @@
 		<java.version>1.8</java.version>
 		<spring.boot.version>2.3.12.RELEASE</spring.boot.version>
 	</properties>
-	<dependencies>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter</artifactId>
-			<version>${spring.boot.version}</version>
-		</dependency>
 
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-web</artifactId>
-			<version>${spring.boot.version}</version>
-		</dependency>
-
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-test</artifactId>
-			<scope>test</scope>
-			<version>${spring.boot.version}</version>
-			<exclusions>
-				<exclusion>
-					<groupId>org.junit.vintage</groupId>
-					<artifactId>junit-vintage-engine</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-	</dependencies>
 
 </project>
