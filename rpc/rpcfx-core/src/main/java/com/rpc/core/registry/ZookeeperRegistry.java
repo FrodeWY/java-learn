@@ -18,6 +18,8 @@ import org.apache.curator.framework.api.CuratorWatcher;
 import org.apache.curator.retry.ExponentialBackoffRetry;
 import org.apache.zookeeper.CreateMode;
 import org.apache.zookeeper.WatchedEvent;
+import org.apache.zookeeper.Watcher.Event.KeeperState;
+
 @Slf4j
 public class ZookeeperRegistry implements Registry {
 
@@ -121,6 +123,9 @@ public class ZookeeperRegistry implements Registry {
     @Override
     public void process(WatchedEvent event) throws Exception {
       if (listener != null) {
+        if (event.getState() == KeeperState.Disconnected) {//注册中心断连,使用缓存
+          return;
+        }
         String path = event.getPath() == null ? "" : event.getPath();
         listener.notify(
             StringUtils.isNotBlank(path) ? client.getChildren().usingWatcher(this).forPath(path)

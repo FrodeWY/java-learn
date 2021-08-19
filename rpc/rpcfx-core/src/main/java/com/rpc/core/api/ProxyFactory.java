@@ -1,5 +1,7 @@
 package com.rpc.core.api;
 
+import com.rpc.core.protocol.RegistryProtocol;
+
 /**
  * @author wangyang
  * @ClassName ProxyFactory
@@ -9,5 +11,7 @@ package com.rpc.core.api;
  */
 public interface ProxyFactory {
 
-  public <T> T proxy();
+   <T> T proxy();
+
+   GenericService genericServiceProxy(RegistryProtocol protocol);
 }

@@ -14,7 +14,7 @@ public class ProxyFactories {
   public static <T> T proxy(String proxyType, Class<T> serviceClass, Invoker invoker) {
     T proxy;
     if (JdkProxy.NAME.equals(proxyType)) {
-      proxy = new JdkProxy<>(serviceClass, invoker).proxy();
+      proxy = new JdkProxy(serviceClass, invoker).proxy();
     } else {
       throw new IllegalArgumentException("not found class type is :" + proxyType + " proxy");
     }

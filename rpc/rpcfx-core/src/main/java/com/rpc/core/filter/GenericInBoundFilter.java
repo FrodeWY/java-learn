@@ -20,11 +20,11 @@ public class GenericInBoundFilter implements Filter {
         if (parameterTypes.length != params.length) {
             throw new IllegalArgumentException("parameter type length must equal parameter length");
         }
-        for (int i = 0; i < params.length; i++) {
-
-            final String parameterType = parameterTypes[i];
-            params[i]=arg(parameterType,params[i]);
-        }
+//        for (int i = 0; i < params.length; i++) {
+//
+//            final String parameterType = parameterTypes[i];
+//            params[i]=arg(parameterType,params[i]);
+//        }
     }
 
     @Override
@@ -42,6 +42,7 @@ public class GenericInBoundFilter implements Filter {
         if (parameterTypeClass.isPrimitive()) {
             return parameter;
         }
+
         return JSON.parseObject((String) parameter, parameterTypeClass);
     }
 }

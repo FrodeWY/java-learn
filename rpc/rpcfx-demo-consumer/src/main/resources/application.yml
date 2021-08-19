@@ -6,7 +6,7 @@ rpc:
     consumer:
       loadBalance: random
       proxy: jdk
-      client: netty
+#      client: netty
       registry:
         registryAddress: 127.0.0.1:2181
         registry: zookeeper
