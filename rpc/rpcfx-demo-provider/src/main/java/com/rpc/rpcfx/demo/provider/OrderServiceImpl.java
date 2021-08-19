@@ -1,8 +1,9 @@
 package com.rpc.rpcfx.demo.provider;
 
+import com.rpc.autoconfigure.annotation.RpcService;
 import com.rpc.rpcfx.demo.api.OrderService;
 import com.rpc.rpcfx.demo.api.Order;
-
+@RpcService
 public class OrderServiceImpl implements OrderService {
 
     @Override

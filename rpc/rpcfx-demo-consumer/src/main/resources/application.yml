@@ -1,10 +1,15 @@
 server:
-  port: 8082
+  port: 8081
   
 rpc:
   props:
-    provider:
+    consumer:
+      loadBalance: random
+      proxy: jdk
+      client: netty
       registry:
         registryAddress: 127.0.0.1:2181
         registry: zookeeper
+
+
 

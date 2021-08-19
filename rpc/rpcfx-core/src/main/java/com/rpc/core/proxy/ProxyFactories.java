@@ -11,12 +11,12 @@ import com.rpc.core.api.Invoker;
  */
 public class ProxyFactories {
 
-  public static <T> T proxy(String proxyType, Class<?> serviceClass, Invoker invoker) {
+  public static <T> T proxy(String proxyType, Class<T> serviceClass, Invoker invoker) {
     T proxy;
     if (JdkProxy.NAME.equals(proxyType)) {
-      proxy = new <T>JdkProxy(serviceClass, invoker).proxy();
+      proxy = new JdkProxy<>(serviceClass, invoker).proxy();
     } else {
-      throw new IllegalArgumentException("not found class type is :" + proxyType + " client");
+      throw new IllegalArgumentException("not found class type is :" + proxyType + " proxy");
     }
     return proxy;
   }

@@ -2,6 +2,7 @@ package com.rpc.autoconfigure.config;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
@@ -13,16 +14,34 @@ import org.springframework.stereotype.Component;
  * @Version 1.0
  */
 @ConfigurationProperties(prefix = "rpc.props")
-@Component
 @Getter
 @Setter
 public class RpcConfigProperties {
 
-  private String registry;
-  private String cluster;
-  private String client;
-  private String codec;
-  private String loadBalance;
-  private String registryAddress;
-  private String proxy;
+    private Consumer consumer;
+
+    private Provider provider;
+    @Getter
+    @Setter
+    public static class Consumer {
+        private String cluster;
+        private String client;
+        private String codec;
+        private String loadBalance;
+        private String proxy;
+        private Registry registry;
+    }
+    @Getter
+    @Setter
+    public static class Provider {
+        private String codec;
+        private String client;
+        private Registry registry;
+    }
+    @Getter
+    @Setter
+    public static class Registry {
+        private String registryAddress;
+        private String registry;
+    }
 }

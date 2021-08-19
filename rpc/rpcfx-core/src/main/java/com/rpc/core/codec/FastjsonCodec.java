@@ -2,6 +2,7 @@ package com.rpc.core.codec;
 
 import com.alibaba.fastjson.JSON;
 import com.rpc.core.api.Codec;
+
 import java.io.IOException;
 
 /**
@@ -13,15 +14,20 @@ import java.io.IOException;
  */
 public class FastjsonCodec implements Codec {
 
-  public static final String NAME = "fastjson";
+    public static final String NAME = "fastjson";
 
-  @Override
-  public byte[] encode(Object object) throws IOException {
-    return JSON.toJSONBytes(object);
-  }
+    @Override
+    public byte[] encode(Object object) throws IOException {
+        return JSON.toJSONBytes(object);
+    }
 
-  @Override
-  public Object decode(byte[] bytes) throws IOException {
-    return JSON.parse(bytes);
-  }
+    @Override
+    public <T> T decode(String str, Class<T> type) throws IOException {
+        return JSON.parseObject(str, type);
+    }
+
+    @Override
+    public <T> T decode(byte[] bytes, Class<T> type) throws IOException {
+        return JSON.parseObject(bytes, type);
+    }
 }

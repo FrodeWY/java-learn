@@ -1,7 +1,9 @@
 package com.rpc.core.codec;
 
 import com.rpc.core.api.Codec;
+
 import java.io.IOException;
+
 import org.msgpack.MessagePack;
 
 /**
@@ -13,17 +15,23 @@ import org.msgpack.MessagePack;
  */
 public class MsgPackCodec implements Codec {
 
-  public static final String NAME = "msgPack";
+    public static final String NAME = "msgPack";
 
-  @Override
-  public byte[] encode(Object object) throws IOException {
-    MessagePack messagePack = new MessagePack();
-    return messagePack.write(object);
-  }
+    @Override
+    public byte[] encode(Object object) throws IOException {
+        MessagePack messagePack = new MessagePack();
+        return messagePack.write(object);
+    }
 
-  @Override
-  public Object decode(byte[] bytes) throws IOException {
-    MessagePack messagePack = new MessagePack();
-    return messagePack.read(bytes);
-  }
+    @Override
+    public <T> T decode(String str, Class<T> type) throws IOException {
+        MessagePack messagePack = new MessagePack();
+        return messagePack.read(str.getBytes(), type);
+    }
+
+    @Override
+    public <T> T decode(byte[] bytes, Class<T> type) throws IOException {
+        MessagePack messagePack = new MessagePack();
+        return messagePack.read(bytes, type);
+    }
 }

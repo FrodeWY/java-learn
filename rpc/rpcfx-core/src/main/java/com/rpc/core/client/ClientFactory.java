@@ -16,7 +16,9 @@ public class ClientFactory {
     Client client;
     if (OkHttpClient.NAME.equals(type)) {
       client = new OkHttpClient(url, codec);
-    } else {
+    } else if (NettyClient.NAME.equals(type)) {
+      client = new NettyClient(url, codec);
+    }else {
       throw new IllegalArgumentException("not found class type is :" + type + " client");
     }
     return client;

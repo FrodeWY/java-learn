@@ -18,7 +18,7 @@ public class RandomLoadBalance implements LoadBalancer {
 
   @Override
   public Invoker select(List<Invoker> invokerList) {
-    Random random = new Random(invokerList.size());
-    return invokerList.get(random.nextInt());
+    Random random = new Random();
+    return invokerList.get(random.nextInt(invokerList.size()));
   }
 }

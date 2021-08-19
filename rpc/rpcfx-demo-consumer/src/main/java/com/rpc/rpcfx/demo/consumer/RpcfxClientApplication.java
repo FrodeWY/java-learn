@@ -1,32 +1,41 @@
 package com.rpc.rpcfx.demo.consumer;
 
+import com.rpc.autoconfigure.annotation.RpcReference;
 import com.rpc.core.api.LoadBalancer;
 import com.rpc.core.api.Router;
 import com.rpc.core.client.Rpcfx;
 import com.rpc.rpcfx.demo.api.User;
 import com.rpc.rpcfx.demo.api.UserService;
+import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
 @SpringBootApplication
-@EnableAspectJAutoProxy
+//@EnableAspectJAutoProxy
+@RestController
 public class RpcfxClientApplication {
 
-	// 二方库
-	// 三方库 lib
-	// nexus, userserivce -> userdao -> user
-	//
+    // 二方库
+    // 三方库 lib
+    // nexus, userserivce -> userdao -> user
+    //
 
-	public static void main(String[] args) {
+    @RpcReference
+    private UserService userService;
 
-		// UserService service = new xxx();
-		// service.findById
+    public static void main(String[] args) {
+
+        // UserService service = new xxx();
+        // service.findById
 
 		UserService userService = Rpcfx.create(UserService.class, "http://localhost:8080/");
-		User user = userService.findById(1);
-		System.out.println("find user id=1 from server: " + user.getName());
+//		User user = userService.findById(1);
+//		System.out.println("find user id=1 from server: " + user.getName());
 
 //		OrderService orderService = Rpcfx.create(OrderService.class, "http://localhost:8080/");
 //		Order order = orderService.findOrderById(1992129);
@@ -35,9 +44,16 @@ public class RpcfxClientApplication {
 //		//
 //		UserService userService2 = Rpcfx.createFromRegistry(UserService.class, "localhost:2181", new TagRouter(), new RandomLoadBalancer(), new CuicuiFilter());
 
-//		SpringApplication.run(RpcfxClientApplication.class, args);
-	}
+        SpringApplication.run(RpcfxClientApplication.class, args);
 
+    }
+
+    @GetMapping(path = "/user/{id}")
+    public User getUser(@PathVariable int id) {
+        User user = userService.findById(1);
+        System.out.println("find user id=" + id + " from server: " + user.getName());
+        return user;
+    }
 //	private static class TagRouter implements Router {
 //		@Override
 //		public List<String> route(List<String> urls) {

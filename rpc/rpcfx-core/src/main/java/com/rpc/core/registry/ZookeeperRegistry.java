@@ -8,6 +8,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.apache.curator.RetryPolicy;
 import org.apache.curator.framework.CuratorFramework;
@@ -16,7 +18,7 @@ import org.apache.curator.framework.api.CuratorWatcher;
 import org.apache.curator.retry.ExponentialBackoffRetry;
 import org.apache.zookeeper.CreateMode;
 import org.apache.zookeeper.WatchedEvent;
-
+@Slf4j
 public class ZookeeperRegistry implements Registry {
 
   public static final String NAME = "zookeeper";
@@ -77,7 +79,7 @@ public class ZookeeperRegistry implements Registry {
     try {
       client.create().creatingParentsIfNeeded().withMode(CreateMode.EPHEMERAL).forPath(registerPath);
     } catch (Exception e) {
-      e.printStackTrace();
+      log.warn(e.getMessage());
     }
   }
 

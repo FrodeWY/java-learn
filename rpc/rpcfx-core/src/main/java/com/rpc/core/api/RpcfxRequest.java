@@ -9,4 +9,5 @@ public class RpcfxRequest {
     private Boolean generic;
     private Object[] params;
     private String[] parameterTypes;
+    private Class<?> returnType;
 }

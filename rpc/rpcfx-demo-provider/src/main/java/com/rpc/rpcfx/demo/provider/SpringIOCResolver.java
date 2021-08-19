@@ -5,7 +5,6 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
 
-@Component
 public class SpringIOCResolver implements RpcfxResolver, ApplicationContextAware {
 
     private ApplicationContext applicationContext;
@@ -17,6 +16,11 @@ public class SpringIOCResolver implements RpcfxResolver, ApplicationContextAware
 
     @Override
     public Object resolve(String serviceClass) {
-        return this.applicationContext.getBean(serviceClass);
+        try {
+            final Class<?> aClass = Class.forName(serviceClass);
+            return this.applicationContext.getBean(aClass);
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

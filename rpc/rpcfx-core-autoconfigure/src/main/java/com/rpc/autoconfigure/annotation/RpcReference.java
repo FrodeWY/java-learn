@@ -1,4 +1,4 @@
-package com.rpc.core.annotation;
+package com.rpc.autoconfigure.annotation;
 
 
 import java.lang.annotation.*;
