@@ -48,6 +48,8 @@ public class RpcReferenceAutowiredBeanPostProcessor implements BeanPostProcessor
 
     private ListableBeanFactory beanFactory;
 
+    private RegistryProtocol protocol;
+
     public RpcReferenceAutowiredBeanPostProcessor() {
     }
 
@@ -81,35 +83,19 @@ public class RpcReferenceAutowiredBeanPostProcessor implements BeanPostProcessor
                     properties.setConsumer(new RpcConfigProperties.Consumer());
                 }
             }
-            RegistryProtocol protocol = getRegistryProtocol(properties.getConsumer());
+            if (protocol == null) {
+                protocol = beanFactory.getBean(RegistryProtocol.class);
+            }
             Invoker invoker = protocol.getInvoker(type.getName());
             Object proxy = ProxyFactories.proxy(getOrDefault(properties.getConsumer().getProxy(), JdkProxy.NAME), type, invoker);
             declaredField.setAccessible(true);
             try {
-                declaredField.set(bean,proxy);
+                declaredField.set(bean, proxy);
             } catch (IllegalAccessException e) {
                 throw new RuntimeException(e);
             }
         }
         return bean;
-    }
-
-    @NotNull
-    private RegistryProtocol getRegistryProtocol(RpcConfigProperties.Consumer properties) {
-        String clientType = getOrDefault(properties.getClient(), OkHttpClient.NAME);
-        String clusterType = getOrDefault(properties.getCluster(), FailfastCluster.NAME);
-        String codecType = getOrDefault(properties.getCodec(), FastjsonCodec.NAME);
-        RpcConfigProperties.Registry registryProperties = properties.getRegistry();
-        String loadBalance = getOrDefault(properties.getLoadBalance(), RandomLoadBalance.NAME);
-        Codec codec = CodecFactory.getCodec(codecType);
-        if (registryProperties == null) {
-            registryProperties = new RpcConfigProperties.Registry();
-        }
-        String registryType = getOrDefault(registryProperties.getRegistry(), ZookeeperRegistry.NAME);
-        Registry registry = RegistryFactory.getRegistry(registryType, registryProperties.getRegistryAddress());
-        Cluster cluster = ClusterFactory.getCluster(clusterType);
-        LoadBalancer loadBalancer = LoadBalanceFactory.getLoadBalancer(loadBalance);
-        return new RegistryProtocol(cluster, loadBalancer, clientType, registry, routerList, codec);
     }
 
     private String getOrDefault(String type, String defaultValue) {

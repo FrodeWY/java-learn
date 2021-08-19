@@ -4,8 +4,10 @@ import com.rpc.autoconfigure.annotation.RpcReference;
 import com.rpc.core.api.LoadBalancer;
 import com.rpc.core.api.Router;
 import com.rpc.core.client.Rpcfx;
+import com.rpc.core.protocol.RegistryProtocol;
 import com.rpc.rpcfx.demo.api.User;
 import com.rpc.rpcfx.demo.api.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
@@ -28,12 +30,14 @@ public class RpcfxClientApplication {
     @RpcReference
     private UserService userService;
 
+    @Autowired
+    private RegistryProtocol protocol;
+
     public static void main(String[] args) {
 
         // UserService service = new xxx();
         // service.findById
 
-		UserService userService = Rpcfx.create(UserService.class, "http://localhost:8080/");
 //		User user = userService.findById(1);
 //		System.out.println("find user id=1 from server: " + user.getName());
 
@@ -46,12 +50,14 @@ public class RpcfxClientApplication {
 
         SpringApplication.run(RpcfxClientApplication.class, args);
 
+
     }
 
     @GetMapping(path = "/user/{id}")
     public User getUser(@PathVariable int id) {
         User user = userService.findById(1);
         System.out.println("find user id=" + id + " from server: " + user.getName());
+        protocol.getInvoker(UserService.class)
         return user;
     }
 //	private static class TagRouter implements Router {
