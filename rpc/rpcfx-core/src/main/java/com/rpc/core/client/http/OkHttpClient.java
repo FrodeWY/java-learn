@@ -1,11 +1,10 @@
-package com.rpc.core.client;
+package com.rpc.core.client.http;
 
 import com.rpc.core.api.Client;
 import com.rpc.core.api.Codec;
-import com.rpc.core.api.RpcfxRequest;
-import com.rpc.core.api.RpcfxResponse;
+import com.rpc.core.common.RpcfxRequest;
+import com.rpc.core.common.RpcfxResponse;
 
-import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.*;

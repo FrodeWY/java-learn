@@ -11,7 +11,7 @@ import com.rpc.core.protocol.RegistryProtocol;
  */
 public interface ProxyFactory {
 
-   <T> T proxy();
+   <T> T proxy(Class<T> serviceClass, Invoker invoker);
 
    GenericService genericServiceProxy(RegistryProtocol protocol);
 }

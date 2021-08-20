@@ -2,11 +2,13 @@ package com.rpc.core.filter;
 
 import com.alibaba.fastjson.JSON;
 import com.rpc.core.api.Filter;
-import com.rpc.core.api.RpcfxRequest;
+import com.rpc.core.common.RpcfxRequest;
+import lombok.extern.slf4j.Slf4j;
 
 /**
- * 泛型调用过滤器,这里默认参数的序列化是通过fastJson进行的,所以反序列化也通过fastJson
+ * 泛型调用过滤器
  */
+@Slf4j
 public class GenericInBoundFilter implements Filter {
 
     @Override
@@ -20,6 +22,7 @@ public class GenericInBoundFilter implements Filter {
         if (parameterTypes.length != params.length) {
             throw new IllegalArgumentException("parameter type length must equal parameter length");
         }
+        log.info("generic invoke:{}", request.getServiceClass());
 //        for (int i = 0; i < params.length; i++) {
 //
 //            final String parameterType = parameterTypes[i];

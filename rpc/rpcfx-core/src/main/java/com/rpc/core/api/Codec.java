@@ -1,5 +1,7 @@
 package com.rpc.core.api;
 
+import io.netty.buffer.ByteBuf;
+
 import java.io.IOException;
 
 public interface Codec {
@@ -9,4 +11,6 @@ public interface Codec {
     <T> T decode(byte[] bytes, Class<T> type) throws IOException;
 
     <T> T decode(String str, Class<T> type) throws IOException;
+
+    <T> T decode(ByteBuf in, Class<T> type) throws IOException;
 }

@@ -1,9 +1,10 @@
-package com.rpc.core.codec;
+package com.rpc.core.codec.msgpack;
 
 import com.rpc.core.api.Codec;
 
 import java.io.IOException;
 
+import io.netty.buffer.ByteBuf;
 import org.msgpack.MessagePack;
 
 /**
@@ -21,6 +22,13 @@ public class MsgPackCodec implements Codec {
     public byte[] encode(Object object) throws IOException {
         MessagePack messagePack = new MessagePack();
         return messagePack.write(object);
+    }
+
+    @Override
+    public <T> T decode(ByteBuf in, Class<T> type) throws IOException {
+        byte[] bytes = new byte[in.readableBytes()];
+        in.readBytes(bytes);
+        return decode(bytes, type);
     }
 
     @Override

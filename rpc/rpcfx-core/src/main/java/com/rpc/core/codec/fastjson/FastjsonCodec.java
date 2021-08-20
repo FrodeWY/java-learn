@@ -1,7 +1,8 @@
-package com.rpc.core.codec;
+package com.rpc.core.codec.fastjson;
 
 import com.alibaba.fastjson.JSON;
 import com.rpc.core.api.Codec;
+import io.netty.buffer.ByteBuf;
 
 import java.io.IOException;
 
@@ -24,6 +25,13 @@ public class FastjsonCodec implements Codec {
     @Override
     public <T> T decode(String str, Class<T> type) throws IOException {
         return JSON.parseObject(str, type);
+    }
+
+    @Override
+    public <T> T decode(ByteBuf in, Class<T> type) throws IOException {
+        byte[] bytes = new byte[in.readableBytes()];
+        in.readBytes(bytes);
+        return decode(bytes, type);
     }
 
     @Override

@@ -1,5 +1,7 @@
 package com.rpc.core.api;
 
+import com.rpc.core.common.RpcfxRequest;
+
 public interface Filter {
 
     void filter(RpcfxRequest request);

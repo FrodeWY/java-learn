@@ -1,4 +1,4 @@
-package com.rpc.rpcfx.demo.provider;
+package com.rpc.autoconfigure.resolver;
 
 import com.rpc.core.api.RpcfxResolver;
 import org.springframework.context.ApplicationContext;

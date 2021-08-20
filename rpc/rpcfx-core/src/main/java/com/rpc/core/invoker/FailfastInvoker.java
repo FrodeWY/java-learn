@@ -3,8 +3,8 @@ package com.rpc.core.invoker;
 import com.rpc.core.api.Directory;
 import com.rpc.core.api.Invoker;
 import com.rpc.core.api.LoadBalancer;
-import com.rpc.core.api.RpcfxRequest;
-import com.rpc.core.api.RpcfxResponse;
+import com.rpc.core.common.RpcfxRequest;
+import com.rpc.core.common.RpcfxResponse;
 
 import java.util.List;
 

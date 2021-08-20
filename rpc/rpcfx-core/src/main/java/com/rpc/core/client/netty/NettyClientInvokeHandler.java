@@ -1,8 +1,8 @@
-package com.rpc.core.client;
+package com.rpc.core.client.netty;
 
+import com.rpc.core.common.RpcfxResponse;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
-import io.netty.handler.codec.http.FullHttpResponse;
 
 /**
  * @author wangyang
@@ -16,7 +16,7 @@ public class NettyClientInvokeHandler extends ChannelInboundHandlerAdapter {
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         try {
-            FullHttpResponse response = (FullHttpResponse) msg;
+            RpcfxResponse response = (RpcfxResponse) msg;
             DefaultFuture future = DefaultFuture.getFuture(ctx.channel().id().asLongText());
             future.complete(response);
         } finally {

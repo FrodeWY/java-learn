@@ -1,17 +1,17 @@
-package com.rpc.core.client;
+package com.rpc.core.client.netty;
 
 import com.rpc.core.api.Client;
 import com.rpc.core.api.Codec;
-import com.rpc.core.api.RpcfxRequest;
-import com.rpc.core.api.RpcfxResponse;
+import com.rpc.core.common.RpcfxRequest;
+import com.rpc.core.common.RpcfxResponse;
+import com.rpc.core.server.netty.EncodeHandler;
+import com.rpc.core.server.netty.RpcfxResponseDecodeHandler;
 import io.netty.bootstrap.Bootstrap;
-import io.netty.buffer.ByteBuf;
 import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioSocketChannel;
-import io.netty.handler.codec.http.FullHttpResponse;
-import io.netty.handler.codec.http.HttpClientCodec;
-import io.netty.handler.codec.http.HttpObjectAggregator;
+import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
+import io.netty.handler.codec.LengthFieldPrepender;
 import org.jetbrains.annotations.NotNull;
 
 import java.net.URL;
@@ -35,22 +35,17 @@ public class NettyClient implements Client {
         RpcfxResponse result;
         Channel channel = null;
         try {
-            URL url = new URL(scheme+serverUrl);
+            URL url = new URL(scheme + serverUrl);
             System.out.println("request:" + serverUrl);
             String host = url.getHost();
             int port = url.getPort();
-            client = InternalNettyClient.getClient(host, port);
+            client = InternalNettyClient.getClient(host, port, codec);
             channel = client.getChannel();
             DefaultFuture defaultFuture = send(channel, request);
             result = getResponse(defaultFuture, request);
         } catch (Exception e) {
             e.printStackTrace();
             result = new RpcfxResponse(e);
-        } finally {
-            if (channel != null) {
-                DefaultFuture.remove(channel.id().asLongText());
-                channel.close();
-            }
         }
         return result;
     }
@@ -65,7 +60,7 @@ public class NettyClient implements Client {
         private final String host;
         private final Integer port;
 
-        InternalNettyClient(String host, int port) {
+        InternalNettyClient(String host, int port, Codec codec) {
             this.host = host;
             this.port = port;
             uniqueKey = generateUniqueKey(host, port);
@@ -79,22 +74,22 @@ public class NettyClient implements Client {
                         @Override
                         protected void initChannel(NioSocketChannel ch) throws Exception {
                             ch.pipeline()
-                                    //                                    .addLast(new HttpRequestEncoder())
-                                    //                                    .addLast(new HttpResponseDecoder())
-                                    .addLast(new HttpClientCodec())
-                                    .addLast(new HttpObjectAggregator(1024 * 1024))
+                                    .addLast("frameDecoder", new LengthFieldBasedFrameDecoder(65535, 0, 2, 0, 2))
+                                    .addLast("decoder", new RpcfxResponseDecodeHandler(codec))
+                                    .addLast("frameEncoder", new LengthFieldPrepender(2))
+                                    .addLast("encoder", new EncodeHandler(codec))
                                     .addLast(new NettyClientInvokeHandler());
                         }
                     });
 
         }
 
-        public static InternalNettyClient getClient(String host, int port) {
+        public static InternalNettyClient getClient(String host, int port, Codec codec) {
             String uniqueKey = generateUniqueKey(host, port);
             if (CLIENT_CACHE.containsKey(uniqueKey)) {
                 return CLIENT_CACHE.get(uniqueKey);
             }
-            InternalNettyClient nettyClient = new InternalNettyClient(host, port);
+            InternalNettyClient nettyClient = new InternalNettyClient(host, port, codec);
             CLIENT_CACHE.put(uniqueKey, nettyClient);
             return nettyClient;
         }
@@ -133,14 +128,16 @@ public class NettyClient implements Client {
 
     @NotNull
     private RpcfxResponse getResponse(DefaultFuture defaultFuture, RpcfxRequest request) throws Exception {
-        RpcfxResponse result;
-        FullHttpResponse response = (FullHttpResponse) defaultFuture.get();
-        ByteBuf content = response.content();
-        byte[] bytes = new byte[content.readableBytes()];
-        content.readBytes(bytes);
-        result = codec.decode(bytes, RpcfxResponse.class);
-        result.setResult(codec.decode((String) result.getResult(), request.getReturnType()));
-        return result;
+        RpcfxResponse response = null;
+        try {
+            response = (RpcfxResponse) defaultFuture.get();
+            response.setResult(codec.decode((String) response.getResult(), request.getReturnType()));
+            response.setStatus(true);
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.setException(e);
+        }
+        return response;
     }
 
 }

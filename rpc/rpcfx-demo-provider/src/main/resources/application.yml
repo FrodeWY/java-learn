@@ -4,6 +4,7 @@ server:
 rpc:
   props:
     provider:
+      codec: fastjson
       registry:
         registryAddress: 127.0.0.1:2181
         registry: zookeeper
