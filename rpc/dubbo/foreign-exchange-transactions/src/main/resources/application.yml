@@ -1,0 +1,12 @@
+dubbo:
+  scan:
+    base-packages: com.exchange.service
+  registry:
+    address: zookeeper://localhost:2181
+  metadata-report:
+    address: zookeeper://localhost:2181
+server:
+  port: 8070
+spring:
+  application:
+    name: foreign-exchange-transactions

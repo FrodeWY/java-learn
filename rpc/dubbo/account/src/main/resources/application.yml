@@ -1,0 +1,90 @@
+spring:
+  shardingsphere:
+    props:
+      sql-show: true
+    datasource:
+      names: ds0,ds1
+      ds0:
+        type: com.zaxxer.hikari.HikariDataSource
+        driver-class-name: com.mysql.jdbc.Driver
+        jdbc-url: jdbc:mysql://localhost:3306/account0?characterEncoding=utf-8&useSSL=false
+        username: root
+        password: Wy568279.
+        maximum-pool-size: 100
+        idle-timeout: 60000
+        max-lifetime: 25200000
+        minimum-idle: 20
+        connection-timeout: 10000
+        pool-name: account0-pool
+        connection-test-query: select 1
+      ds1:
+        type: com.zaxxer.hikari.HikariDataSource
+        driver-class-name: com.mysql.jdbc.Driver
+        jdbc-url: jdbc:mysql://localhost:3316/account1?characterEncoding=utf-8&useSSL=false
+        username: root
+        password: 123456
+        maximum-pool-size: 100
+        idle-timeout: 60000
+        max-lifetime: 25200000
+        minimum-idle: 20
+        connection-timeout: 10000
+        pool-name: account1-pool
+        connection-test-query: select 1
+    rules:
+      sharding:
+        sharding-algorithms:
+          #注:   shardingsphere-jdbc配置分片算法名时,由于shardingsphere-jdbc对于spring boot V2.0+的属性使用Binder解析,所以算法名不能存在 _
+          database-inline:
+            type: INLINE
+            props:
+              algorithm-expression: ds$->{user_id % 2}
+        binding-tables:
+          - t_account
+          - t_freeze_asset
+        tables:
+          t_account:
+            ## 行表达式标识符可以使用 ${...} 或 $->{...}，但前者与 Spring 本身的属性文件占位符冲突，因此在 Spring 环境中使用行表达式标识符建议使用 $->{...}。
+            actual-data-nodes: ds$->{0..1}.account
+            database-strategy:
+              standard:
+                sharding-column: user_id
+                sharding-algorithm-name: database-inline
+          t_freeze_asset:
+            ## 行表达式标识符可以使用 ${...} 或 $->{...}，但前者与 Spring 本身的属性文件占位符冲突，因此在 Spring 环境中使用行表达式标识符建议使用 $->{...}。
+            actual-data-nodes: ds$->{0..1}.freeze_asset
+            database-strategy:
+              standard:
+                sharding-column: user_id
+                sharding-algorithm-name: database-inline
+  application:
+    name: account
+
+
+
+mybatis:
+  mapper-locations: classpath:mapper/*.xml
+  configuration:
+    map-underscore-to-camel-case: true
+server:
+  port: 8081
+
+
+dubbo:
+  scan:
+    base-packages: com.account.service
+  protocol:
+    name: dubbo
+    port: 12345
+  registry:
+    address: zookeeper://localhost:2181
+  metadata-report:
+    address: zookeeper://localhost:2181
+  application:
+    qosEnable: true
+    qosPort: 22222
+    qosAcceptForeignIp: true
+    qos-enable-compatible: true
+    qos-host-compatible: localhost
+    qos-port-compatible: 22222
+    qos-accept-foreign-ip-compatible: true
+    qos-host: localhost

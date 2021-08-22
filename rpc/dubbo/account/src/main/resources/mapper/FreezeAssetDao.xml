@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.account.dao.FreezeAssetDao">
+
+  <resultMap id="BaseResultMap" type="com.account.entity.FreezeAsset">
+    <!--@Table freeze_asset-->
+    <result property="id" column="id" jdbcType="BIGINT"/>
+    <result property="userId" column="user_id" jdbcType="BIGINT"/>
+    <result property="accountId" column="account_id" jdbcType="BIGINT"/>
+    <result property="toAccountId" column="to_account_id" jdbcType="BIGINT"/>
+    <result property="accountType" column="account_type" jdbcType="INTEGER"/>
+    <result property="amount" column="amount" jdbcType="VARCHAR"/>
+    <result property="toAmount" column="to_amount" jdbcType="VARCHAR"/>
+    <result property="transactionNo" column="transaction_no" jdbcType="VARCHAR"/>
+    <result property="createTime" column="create_time" jdbcType="BIGINT"/>
+    <result property="modifyTime" column="modify_time" jdbcType="BIGINT"/>
+    <result property="freezeStatus" column="freeze_status" jdbcType="INTEGER"/>
+    <result property="version" column="version" jdbcType="INTEGER"/>
+  </resultMap>
+
+  <!--查询单个-->
+  <select id="queryById" resultMap="BaseResultMap">
+    select id,
+           user_id,
+           account_id,
+           to_account_id,
+           account_type,
+           amount,
+           to_amount,
+           transaction_no,
+           create_time,
+           modify_time,
+           freeze_status,
+           version
+    from t_freeze_asset
+    where id = #{id}
+  </select>
+  <select id="queryByTransactionNoAndFreezeStatus" resultMap="BaseResultMap">
+    select id,
+           user_id,
+           account_id,
+           to_account_id,
+           account_type,
+           amount,
+           to_amount,
+           transaction_no,
+           create_time,
+           modify_time,
+           freeze_status,
+           version
+    from t_freeze_asset
+    where transaction_no = #{transactionNo}
+      and freeze_status = #{freezeStatus}
+  </select>
+  <!--查询指定行数据-->
+  <select id="queryAllByLimit" resultMap="BaseResultMap">
+    select id,
+           account_id,
+           user_id,
+           to_account_id,
+           account_type,
+           amount,
+           to_amount,
+           transaction_no,
+           create_time,
+           modify_time,
+           freeze_status,
+           version
+    from t_freeze_asset
+    limit #{offset}, #{limit}
+  </select>
+
+  <!--通过实体作为筛选条件查询-->
+  <select id="queryAll" resultMap="BaseResultMap">
+    select
+    id,user_id, account_id,to_account_id,, account_type, amount,to_amount, transaction_no, create_time, modify_time, freeze_status, version
+    from t_freeze_asset
+    <where>
+      <if test="id != null">
+        and id = #{id}
+      </if>
+      <if test="userId != null">
+        and user_id = #{userId}
+      </if>
+      <if test="accountId != null">
+        and account_id = #{accountId}
+      </if>
+      <if test="toAccountId != null">
+        and to_account_id = #{toAccountId}
+      </if>
+      <if test="accountType != null">
+        and account_type = #{accountType}
+      </if>
+      <if test="amount != null and amount != ''">
+        and amount = #{amount}
+      </if>
+      <if test="toAmount != null and toAmount != ''">
+        and to_amount = #{toAmount}
+      </if>
+      <if test="transactionNo != null and transactionNo != ''">
+        and transaction_no = #{transactionNo}
+      </if>
+      <if test="createTime != null">
+        and create_time = #{createTime}
+      </if>
+      <if test="modifyTime != null">
+        and modify_time = #{modifyTime}
+      </if>
+      <if test="freezeStatus != null">
+        and freeze_status = #{freezeStatus}
+      </if>
+      <if test="version != null">
+        and version = #{version}
+      </if>
+    </where>
+  </select>
+
+  <!--新增所有列-->
+  <insert id="insert" keyProperty="id" useGeneratedKeys="true">
+    insert into t_freeze_asset(user_id, account_id, to_account_id, account_type, amount, to_amount, transaction_no, create_time, modify_time,
+                               freeze_status,
+                               version)
+    values (#{userId}, #{accountId}, #{toAccountId}, #{accountType}, #{amount}, #{toAmount}, #{transactionNo}, #{createTime}, #{modifyTime},
+            #{freezeStatus},
+            #{version})
+  </insert>
+
+  <!--通过主键修改数据-->
+  <update id="update">
+    update t_freeze_asset
+    <set>
+      <if test="accountId != null">
+        account_id = #{accountId},
+      </if>
+      <if test="toAccountId != null">
+        to_account_id = #{toAccountId},
+      </if>
+      <if test="accountType != null">
+        account_type = #{accountType},
+      </if>
+      <if test="amount != null and amount != ''">
+        amount = #{amount},
+      </if>
+      <if test="toAmount != null and toAmount != ''">
+        to_amount = #{toAmount},
+      </if>
+      <if test="transactionNo != null and transactionNo != ''">
+        transaction_no = #{transactionNo},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime},
+      </if>
+      <if test="modifyTime != null">
+        modify_time = #{modifyTime},
+      </if>
+      <if test="freezeStatus != null">
+        freeze_status = #{freezeStatus},
+      </if>
+      <if test="version != null">
+        version = #{version},
+      </if>
+    </set>
+    where id = #{id}
+  </update>
+
+  <!--通过主键删除-->
+  <delete id="deleteById">
+    delete
+    from t_freeze_asset
+    where id = #{id}
+  </delete>
+
+</mapper>
