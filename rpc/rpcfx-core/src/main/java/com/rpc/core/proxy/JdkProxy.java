@@ -48,7 +48,7 @@ public class JdkProxy implements InvocationHandler, ProxyFactory {
         RpcfxRequest rpcfxRequest = new RpcfxRequest();
         Class<?> returnType = method.getReturnType();
         rpcfxRequest.setReturnType(returnType);
-        //泛型调用
+        //泛化调用
         if (GenericService.class.isAssignableFrom(serviceClass)) {
             rpcfxRequest.setGeneric(true);
             String serviceClass = (String) args[0];

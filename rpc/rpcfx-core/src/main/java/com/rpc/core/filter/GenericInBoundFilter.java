@@ -6,7 +6,7 @@ import com.rpc.core.common.RpcfxRequest;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * 泛型调用过滤器
+ * 泛化调用过滤器
  */
 @Slf4j
 public class GenericInBoundFilter implements Filter {
