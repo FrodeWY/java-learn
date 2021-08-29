@@ -6,6 +6,11 @@ import com.rpc.core.api.Registry;
 import com.rpc.core.common.RegistryConstants;
 import com.rpc.core.registry.RegistryFactory;
 import com.rpc.core.registry.ZookeeperRegistry;
+import com.rpc.core.utils.ServicePathUtil;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.util.HashMap;
+import java.util.Map;
 import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.aop.support.AopUtils;
@@ -18,77 +23,88 @@ import org.springframework.context.EnvironmentAware;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
-import java.net.InetAddress;
-import java.net.UnknownHostException;
-
 @Component
 public class RpcServiceRegistryBeanPostProcessor implements BeanPostProcessor, BeanFactoryAware, EnvironmentAware {
-    private RpcConfigProperties properties;
-    private ListableBeanFactory beanFactory;
-    private Environment environment;
 
-    @Override
-    public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {
+  private RpcConfigProperties properties;
+  private ListableBeanFactory beanFactory;
+  private Environment environment;
 
-        Class<?> targetClass;
-        if (AopUtils.isAopProxy(bean)) {
-            targetClass = AopUtils.getTargetClass(bean);
-        } else {
-            targetClass = bean.getClass();
-        }
+  @Override
+  public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {
 
-        RpcService annotation = targetClass.getAnnotation(RpcService.class);
-        if (annotation == null) {
-            return bean;
-        }
-        if (properties == null) {
-            properties = beanFactory.getBean(RpcConfigProperties.class);
-            if (properties.getProvider() == null) {
-                properties.setProvider(new RpcConfigProperties.Provider());
-            }
-        }
-        Registry registry = getRegistry(properties.getProvider());
-        try {
-            final Class<?>[] interfaces = targetClass.getInterfaces();
-            for (Class<?> anInterface : interfaces) {
-                registry.register(getRegisterPath(anInterface.getName()));
-            }
-
-        } catch (UnknownHostException e) {
-            e.printStackTrace();
-        }
-        return bean;
+    Class<?> targetClass;
+    if (AopUtils.isAopProxy(bean)) {
+      targetClass = AopUtils.getTargetClass(bean);
+    } else {
+      targetClass = bean.getClass();
     }
 
-    @NotNull
-    private String getRegisterPath(String serviceName) throws UnknownHostException {
-        return RegistryConstants.ROOT + RegistryConstants.SPLITTER + serviceName + RegistryConstants.SPLITTER + InetAddress.getLocalHost().getHostAddress() + ":" + environment.getProperty("server.port");
+    RpcService annotation = targetClass.getAnnotation(RpcService.class);
+    if (annotation == null) {
+      return bean;
     }
+    if (properties == null) {
+      properties = beanFactory.getBean(RpcConfigProperties.class);
+      if (properties.getProvider() == null) {
+        properties.setProvider(new RpcConfigProperties.Provider());
+      }
+    }
+    Map<String, String> paramMap = new HashMap<>();
+    getServiceConfig(annotation, paramMap);
+    Registry registry = getRegistry(properties.getProvider());
+    try {
+      final Class<?>[] interfaces = targetClass.getInterfaces();
+      for (Class<?> anInterface : interfaces) {
+        registry.register(getRegisterPath(anInterface.getName(), paramMap));
+      }
 
-    public Registry getRegistry(RpcConfigProperties.Provider property) {
-        RpcConfigProperties.Registry propertyRegistry = property.getRegistry();
-        if (propertyRegistry == null) {
-            propertyRegistry = new RpcConfigProperties.Registry();
-        }
-        String registry = propertyRegistry.getRegistry();
-        String registryType = getOrDefault(registry, ZookeeperRegistry.NAME);
-        return RegistryFactory.getRegistry(registryType, propertyRegistry.getRegistryAddress());
+    } catch (UnknownHostException e) {
+      e.printStackTrace();
     }
+    return bean;
+  }
 
-    private String getOrDefault(String type, String defaultValue) {
-        if (StringUtils.isBlank(type)) {
-            return defaultValue;
-        }
-        return type;
-    }
+  private void getServiceConfig(RpcService annotation, Map<String, String> paramMap) {
+    paramMap.put(RegistryConstants.GROUP, annotation.group());
+    paramMap.put(RegistryConstants.VERSION, annotation.version());
+  }
 
-    @Override
-    public void setBeanFactory(BeanFactory beanFactory) throws BeansException {
-        this.beanFactory = (ListableBeanFactory) beanFactory;
-    }
+  @NotNull
+  private String getRegisterPath(String serviceName, Map<String, String> paramMap) throws UnknownHostException {
+    String hostAddress = InetAddress.getLocalHost().getHostAddress();
+    String property = environment.getProperty("server.port");
+    String parentPath = RegistryConstants.SPLITTER + serviceName + RegistryConstants.SPLITTER;
+    String servicePath = hostAddress + ":" + property;
+    String paramString = ServicePathUtil.mapToString(paramMap);
+    String childPath = servicePath + "?" + ServicePathUtil.pathParamsEncode(paramString);
+    return parentPath + childPath;
+  }
 
-    @Override
-    public void setEnvironment(Environment environment) {
-        this.environment = environment;
+  public Registry getRegistry(RpcConfigProperties.Provider property) {
+    RpcConfigProperties.Registry propertyRegistry = property.getRegistry();
+    if (propertyRegistry == null) {
+      propertyRegistry = new RpcConfigProperties.Registry();
     }
+    String registry = propertyRegistry.getRegistry();
+    String registryType = getOrDefault(registry, ZookeeperRegistry.NAME);
+    return RegistryFactory.getRegistry(registryType, propertyRegistry.getRegistryAddress());
+  }
+
+  private String getOrDefault(String type, String defaultValue) {
+    if (StringUtils.isBlank(type)) {
+      return defaultValue;
+    }
+    return type;
+  }
+
+  @Override
+  public void setBeanFactory(BeanFactory beanFactory) throws BeansException {
+    this.beanFactory = (ListableBeanFactory) beanFactory;
+  }
+
+  @Override
+  public void setEnvironment(Environment environment) {
+    this.environment = environment;
+  }
 }

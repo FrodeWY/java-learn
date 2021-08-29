@@ -18,7 +18,7 @@ public class FailfastCluster implements Cluster {
   public static String NAME = "failfast";
 
   @Override
-  public Invoker join(Directory directory, LoadBalancer loadBalancer) {
-    return new FailfastInvoker(directory, loadBalancer);
+  public Invoker join(Directory directory, LoadBalancer loadBalancer, String group, String version) {
+    return new FailfastInvoker(directory, loadBalancer, group, version);
   }
 }

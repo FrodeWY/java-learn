@@ -1,15 +1,14 @@
 package com.rpc.core.registry;
 
 
-import com.rpc.core.api.Listener;
 import com.rpc.core.api.Registry;
-
+import com.rpc.core.api.RegistryCenterListener;
+import com.rpc.core.common.RegistryConstants;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.apache.curator.RetryPolicy;
@@ -20,6 +19,7 @@ import org.apache.curator.retry.ExponentialBackoffRetry;
 import org.apache.zookeeper.CreateMode;
 import org.apache.zookeeper.WatchedEvent;
 import org.apache.zookeeper.Watcher;
+import org.apache.zookeeper.Watcher.Event.EventType;
 import org.apache.zookeeper.Watcher.Event.KeeperState;
 
 @Slf4j
@@ -27,32 +27,31 @@ public class ZookeeperRegistry implements Registry {
 
   public static final String NAME = "zookeeper";
   private CuratorFramework client;
-
-  private static final Map<String, ConcurrentHashMap<Listener, ZKChildListener>> ZK_CHILD_LISTENER_MAP = new ConcurrentHashMap<>();
+  private static final Map<String, ConcurrentHashMap<RegistryCenterListener, ZKChildListener>> ZK_CHILD_LISTENER_MAP = new ConcurrentHashMap<>();
   private static final Map<String, ZKReRegisterListener> ZK_RE_REGISTER_LISTENER_MAP = new ConcurrentHashMap<>();
 
   public ZookeeperRegistry(String registryAddress) {
     RetryPolicy retryPolicy = new ExponentialBackoffRetry(500, 3);
-    client = CuratorFrameworkFactory.builder().retryPolicy(retryPolicy)
+    client = CuratorFrameworkFactory.builder().namespace(RegistryConstants.ROOT).retryPolicy(retryPolicy)
         .connectString(registryAddress).build();
     client.start();
   }
 
   @Override
-  public void subscribe(String subscribePath, Listener listener) {
+  public void subscribe(String subscribePath, RegistryCenterListener registryCenterListener) {
     if (StringUtils.isBlank(subscribePath)) {
       return;
     }
-    ConcurrentHashMap<Listener, ZKChildListener> listenerMap;
+    ConcurrentHashMap<RegistryCenterListener, ZKChildListener> listenerMap;
     if ((ZK_CHILD_LISTENER_MAP.get(subscribePath)) == null) {
       ZK_CHILD_LISTENER_MAP.putIfAbsent(subscribePath, new ConcurrentHashMap<>());
     }
     listenerMap = ZK_CHILD_LISTENER_MAP.get(subscribePath);
-    ZKChildListener childListener = listenerMap.get(listener);
+    ZKChildListener childListener = listenerMap.get(registryCenterListener);
     if (childListener == null) {
-      ZKChildListener zkChildListener = new ZKChildListener(client, listener);
-      listenerMap.putIfAbsent(listener, zkChildListener);
-      childListener = listenerMap.get(listener);
+      ZKChildListener zkChildListener = new ZKChildListener(client, registryCenterListener);
+      listenerMap.putIfAbsent(registryCenterListener, zkChildListener);
+      childListener = listenerMap.get(registryCenterListener);
     }
     List<String> updateChildPaths = new ArrayList<>();
     try {
@@ -64,15 +63,15 @@ public class ZookeeperRegistry implements Registry {
     } catch (Exception e) {
       e.printStackTrace();
     }
-    listener.notify(updateChildPaths);
+    registryCenterListener.notify(updateChildPaths);
   }
 
 
   @Override
-  public void unSubscribe(String unSubscribePath, Listener listener) {
-    ConcurrentHashMap<Listener, ZKChildListener> childListenerMap = ZK_CHILD_LISTENER_MAP.get(unSubscribePath);
+  public void unSubscribe(String unSubscribePath, RegistryCenterListener registryCenterListener) {
+    ConcurrentHashMap<RegistryCenterListener, ZKChildListener> childListenerMap = ZK_CHILD_LISTENER_MAP.get(unSubscribePath);
     if (childListenerMap != null) {
-      ZKChildListener zkChildListener = childListenerMap.get(listener);
+      ZKChildListener zkChildListener = childListenerMap.get(registryCenterListener);
       if (zkChildListener != null) {
         zkChildListener.stop();
       }
@@ -103,7 +102,7 @@ public class ZookeeperRegistry implements Registry {
 
   @Override
   public void destroy() {
-    for (ConcurrentHashMap<Listener, ZKChildListener> childListenerMap : ZK_CHILD_LISTENER_MAP.values()) {
+    for (ConcurrentHashMap<RegistryCenterListener, ZKChildListener> childListenerMap : ZK_CHILD_LISTENER_MAP.values()) {
       for (ZKChildListener zkChildListener : childListenerMap.values()) {
         zkChildListener.stop();
       }
@@ -116,29 +115,27 @@ public class ZookeeperRegistry implements Registry {
   public static class ZKChildListener implements CuratorWatcher {
 
     private final CuratorFramework client;
-    private Listener listener;
+    private RegistryCenterListener registryCenterListener;
 
-    public ZKChildListener(CuratorFramework client, Listener listener) {
+    public ZKChildListener(CuratorFramework client, RegistryCenterListener registryCenterListener) {
       this.client = client;
-      this.listener = listener;
+      this.registryCenterListener = registryCenterListener;
     }
 
     public void stop() {
-      listener = null;
+      registryCenterListener = null;
     }
 
     @Override
     public void process(WatchedEvent event) throws Exception {
       log.warn("ZKChildListener WatchedEvent eventType:{},eventState:{}", event.getType(), event.getState());
-      if (listener != null) {
+      if (registryCenterListener != null) {
         if (event.getState() == KeeperState.Disconnected) {//注册中心断连,使用缓存
           return;
         }
         String path = event.getPath() == null ? "" : event.getPath();
-        listener.notify(
-            StringUtils.isNotBlank(path) ? client.getChildren().usingWatcher(this).forPath(path)
-                : Collections
-                    .emptyList());
+        registryCenterListener.notify(
+            StringUtils.isNotBlank(path) ? client.getChildren().usingWatcher(this).forPath(path) : Collections.emptyList());
       }
     }
   }
@@ -156,8 +153,10 @@ public class ZookeeperRegistry implements Registry {
 
     @Override
     public void process(WatchedEvent watchedEvent) throws Exception {
-      log.warn("ZKReRegisterListener WatchedEvent eventType:{},eventState:{}", watchedEvent.getType(), watchedEvent.getState());
-      if (watchedEvent.getType() == Watcher.Event.EventType.NodeDeleted) {
+      EventType type = watchedEvent.getType();
+      KeeperState state = watchedEvent.getState();
+      log.warn("ZKReRegisterListener WatchedEvent eventType:{},eventState:{}", type, watchedEvent.getState());
+      if (type == Watcher.Event.EventType.NodeDeleted || state == Watcher.Event.KeeperState.SyncConnected) {
         client.create().creatingParentsIfNeeded().withMode(CreateMode.EPHEMERAL).forPath(registerPath);
         client.watchers().add().usingWatcher(this).forPath(registerPath);
       }

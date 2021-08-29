@@ -14,7 +14,7 @@ import java.util.List;
 public class TestRouter implements Router {
 
   @Override
-  public List<Invoker> route(List<Invoker> invokers) {
+  public List<Invoker> route(List<Invoker> invokers, String group, String version) {
     return invokers;
   }
 }

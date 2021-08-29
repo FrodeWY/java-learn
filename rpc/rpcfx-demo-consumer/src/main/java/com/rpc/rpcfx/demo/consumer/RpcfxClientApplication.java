@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class RpcfxClientApplication {
 
 
-  @RpcReference
+  @RpcReference(group = "group1", version = "1.0.1")
   private UserService userService;
 
   @Autowired
@@ -33,7 +33,7 @@ public class RpcfxClientApplication {
     User user = userService.findById(1);
     System.out.println("find user id=" + id + " from server: " + user.getName());
     //泛型调用
-    GenericService genericService = new JdkProxy().genericServiceProxy(protocol);
+    GenericService genericService = new JdkProxy().genericServiceProxy(protocol, "group1", "1.0.1");
     Object genericResult = genericService
         .invoke("com.rpc.rpcfx.demo.api.UserService", "findById", new String[]{"java.lang.Integer"}, new Object[]{1});
     System.out.println("genericResult = " + genericResult);

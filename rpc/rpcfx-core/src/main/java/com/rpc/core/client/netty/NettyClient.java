@@ -7,19 +7,20 @@ import com.rpc.core.common.RpcfxResponse;
 import com.rpc.core.server.netty.EncodeHandler;
 import com.rpc.core.server.netty.RpcfxResponseDecodeHandler;
 import io.netty.bootstrap.Bootstrap;
-import io.netty.channel.*;
+import io.netty.channel.Channel;
+import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelInitializer;
+import io.netty.channel.ChannelOption;
+import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
 import io.netty.handler.codec.LengthFieldPrepender;
 import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.concurrent.TimeUnit;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
-
-import java.net.URL;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 @Slf4j
 public class NettyClient implements Client {
@@ -40,6 +41,11 @@ public class NettyClient implements Client {
     } catch (MalformedURLException e) {
       throw new RuntimeException(e);
     }
+  }
+
+  @Override
+  public void destroy() {
+    client.close();
   }
 
   @Override

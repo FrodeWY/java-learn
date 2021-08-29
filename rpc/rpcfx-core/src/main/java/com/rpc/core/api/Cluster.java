@@ -3,5 +3,5 @@ package com.rpc.core.api;
 
 public interface Cluster {
 
-  Invoker join(Directory directory, LoadBalancer loadBalancer);
+  Invoker join(Directory directory, LoadBalancer loadBalancer, String group, String version);
 }

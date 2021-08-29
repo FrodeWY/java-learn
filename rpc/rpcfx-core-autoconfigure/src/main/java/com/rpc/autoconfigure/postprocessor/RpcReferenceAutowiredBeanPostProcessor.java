@@ -1,17 +1,16 @@
 package com.rpc.autoconfigure.postprocessor;
 
-import com.rpc.autoconfigure.config.RpcConfigProperties;
 import com.rpc.autoconfigure.annotation.RpcReference;
+import com.rpc.autoconfigure.config.RpcConfigProperties;
 import com.rpc.core.api.Invoker;
 import com.rpc.core.api.Router;
 import com.rpc.core.protocol.RegistryProtocol;
 import com.rpc.core.proxy.JdkProxy;
 import com.rpc.core.proxy.ProxyFactories;
-
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
 import org.apache.commons.lang.StringUtils;
 import org.springframework.aop.support.AopUtils;
 import org.springframework.beans.BeansException;
@@ -21,8 +20,6 @@ import org.springframework.beans.factory.ListableBeanFactory;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.stereotype.Component;
 import org.springframework.util.ClassUtils;
-
-import java.lang.reflect.Field;
 
 @Component
 public class RpcReferenceAutowiredBeanPostProcessor implements BeanPostProcessor, BeanFactoryAware {
@@ -71,7 +68,7 @@ public class RpcReferenceAutowiredBeanPostProcessor implements BeanPostProcessor
             if (protocol == null) {
                 protocol = beanFactory.getBean(RegistryProtocol.class);
             }
-            Invoker invoker = protocol.getInvoker(type.getName());
+            Invoker invoker = protocol.getInvoker(type.getName(), annotation.group(), annotation.version());
             Object proxy = ProxyFactories.proxy(getOrDefault(properties.getConsumer().getProxy(), JdkProxy.NAME), type, invoker);
             declaredField.setAccessible(true);
             try {

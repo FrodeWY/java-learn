@@ -1,11 +1,17 @@
-server:
-  port: 8082
-  
-rpc:
-  props:
-    provider:
-      codec: fastjson
-      registry:
-        registryAddress: 127.0.0.1:2181
-        registry: zookeeper
+#server:
+#  port: 8083
+#
+#rpc:
+#  props:
+#    provider:
+#      codec: fastjson
+#      registry:
+#        registryAddress: 127.0.0.1:2181
+#        registry: zookeeper
 
+config:
+  center:
+    info:
+      url: 127.0.0.1:2181
+      namespace: rpc-demo
+      dataId: /provider1

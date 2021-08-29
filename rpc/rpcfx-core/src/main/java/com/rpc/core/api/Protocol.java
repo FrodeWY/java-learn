@@ -9,6 +9,6 @@ package com.rpc.core.api;
  */
 public interface Protocol {
 
-  Invoker getInvoker(String serviceName);
+  Invoker getInvoker(String serviceName, String group, String version);
 
 }

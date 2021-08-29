@@ -13,5 +13,5 @@ public interface ProxyFactory {
 
    <T> T proxy(Class<T> serviceClass, Invoker invoker);
 
-   GenericService genericServiceProxy(RegistryProtocol protocol);
+   GenericService genericServiceProxy(RegistryProtocol protocol, String group, String version);
 }

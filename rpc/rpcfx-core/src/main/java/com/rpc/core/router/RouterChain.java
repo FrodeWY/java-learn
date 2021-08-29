@@ -1,7 +1,7 @@
 package com.rpc.core.router;
 
-import com.rpc.core.api.Router;
 import com.rpc.core.api.Invoker;
+import com.rpc.core.api.Router;
 import java.util.List;
 
 /**
@@ -20,13 +20,13 @@ public class RouterChain implements Router {
   }
 
   @Override
-  public List<Invoker> route(List<Invoker> invokers) {
+  public List<Invoker> route(List<Invoker> invokers, String group, String version) {
     if (routers == null || routers.size() == 0 || invokers == null || invokers.size() == 0) {
       return invokers;
     }
     List<Invoker> invokerList = invokers;
     for (Router router : routers) {
-      invokerList = router.route(invokerList);
+      invokerList = router.route(invokerList, group, version);
     }
     return invokerList;
   }

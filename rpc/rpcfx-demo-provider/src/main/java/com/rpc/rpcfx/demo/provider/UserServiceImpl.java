@@ -4,7 +4,7 @@ import com.rpc.autoconfigure.annotation.RpcService;
 import com.rpc.rpcfx.demo.api.User;
 import com.rpc.rpcfx.demo.api.UserService;
 
-@RpcService
+@RpcService(group = "group1", version = "1.0.1")
 public class UserServiceImpl implements UserService {
 
     @Override
