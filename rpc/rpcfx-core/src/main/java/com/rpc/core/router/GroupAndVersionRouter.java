@@ -18,6 +18,7 @@ public class GroupAndVersionRouter implements Router {
   @Override
   public List<Invoker> route(List<Invoker> invokers, String group, String version) {
     List<Invoker> invokerList = new ArrayList<>(invokers);
+
     return invokerList.stream().filter(invoker -> invoker.isMatch(group, version)).collect(Collectors.toList());
   }
 }
