@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cache.dao.CommodityStockDao">
+
+  <resultMap id="BaseResultMap" type="com.cache.entity.CommodityStock">
+    <!--@Table commodity_stock-->
+    <result property="id" column="id" jdbcType="INTEGER"/>
+    <result property="skuCode" column="sku_code" jdbcType="VARCHAR"/>
+    <result property="enabled" column="enabled" jdbcType="TINYINT"/>
+    <result property="stockAmount" column="stock_amount" jdbcType="INTEGER"/>
+    <result property="createTime" column="create_time" jdbcType="BIGINT"/>
+    <result property="updateTime" column="update_time" jdbcType="BIGINT"/>
+    <result property="version" column="version" jdbcType="INTEGER"/>
+  </resultMap>
+
+  <!--查询单个-->
+  <select id="queryById" resultMap="BaseResultMap">
+    select id,
+           sku_code,
+           enabled,
+           stock_amount,
+           create_time,
+           update_time,
+           version
+    from geek.commodity_stock
+    where id = #{id}
+  </select>
+  <select id="queryBySkuCode" resultMap="BaseResultMap">
+    select id,
+           sku_code,
+           enabled,
+           stock_amount,
+           create_time,
+           update_time,
+           version
+    from geek.commodity_stock
+    where sku_code = #{skuCode}
+      and enabled = 1
+  </select>
+  <!--查询指定行数据-->
+  <select id="queryAllByLimit" resultMap="BaseResultMap">
+    select id,
+           sku_code,
+           enabled,
+           stock_amount,
+           create_time,
+           update_time,
+           version
+    from geek.commodity_stock
+    limit #{offset}, #{limit}
+  </select>
+
+  <!--通过实体作为筛选条件查询-->
+  <select id="queryAll" resultMap="BaseResultMap">
+    select
+    id, sku_code, enabled, stock_amount, create_time, update_time,version
+    from geek.commodity_stock
+    <where>
+      <if test="id != null">
+        and id = #{id}
+      </if>
+      <if test="skuCode != null and skuCode != ''">
+        and sku_code = #{skuCode}
+      </if>
+      <if test="enabled != null">
+        and enabled = #{enabled}
+      </if>
+      <if test="stockAmount != null">
+        and stock_amount = #{stockAmount}
+      </if>
+      <if test="createTime != null">
+        and create_time = #{createTime}
+      </if>
+      <if test="updateTime != null">
+        and update_time = #{updateTime}
+      </if>
+    </where>
+  </select>
+
+  <!--新增所有列-->
+  <insert id="insert" keyProperty="id" useGeneratedKeys="true">
+    insert into geek.commodity_stock(id, sku_code, enabled, stock_amount, create_time, update_time)
+    values (#{id}, #{skuCode}, #{enabled}, #{stockAmount}, #{createTime}, #{updateTime})
+  </insert>
+
+  <!--通过主键修改数据-->
+  <update id="update">
+    update geek.commodity_stock
+    <set>
+      <if test="skuCode != null and skuCode != ''">
+        sku_code = #{skuCode},
+      </if>
+      <if test="enabled != null">
+        enabled = #{enabled},
+      </if>
+      <if test="stockAmount != null">
+        stock_amount = #{stockAmount},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime},
+      </if>
+    </set>
+    where id = #{id}
+  </update>
+  <update id="updateStock">
+    update geek.commodity_stock
+    <set>
+      <if test="stockAmount != null">
+        stock_amount = #{stockAmount},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime},
+      </if>
+      version=version+1
+    </set>
+    where id = #{id} and version=#{version} and enabled=1
+  </update>
+  <!--通过主键删除-->
+  <delete id="deleteById">
+    delete
+    from geek.commodity_stock
+    where id = #{id}
+  </delete>
+
+</mapper>

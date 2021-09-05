@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cache.dao.OrderDetailDao">
+
+  <resultMap id="BaseResultMap" type="com.cache.entity.OrderDetail">
+    <!--@Table order_detail-->
+    <result property="id" column="id" jdbcType="BIGINT"/>
+    <result property="orderId" column="order_id" jdbcType="BIGINT"/>
+    <result property="skuCode" column="sku_code" jdbcType="VARCHAR"/>
+    <result property="quantity" column="quantity" jdbcType="INTEGER"/>
+    <result property="unitPrice" column="unit_price" jdbcType="VARCHAR"/>
+    <result property="taxAmount" column="tax_amount" jdbcType="VARCHAR"/>
+    <result property="actualAmount" column="actual_amount" jdbcType="VARCHAR"/>
+    <result property="enabled" column="enabled" jdbcType="TINYINT"/>
+    <result property="createTime" column="create_time" jdbcType="BIGINT"/>
+    <result property="updateTime" column="update_time" jdbcType="BIGINT"/>
+    <result property="unitExchangeScore" column="unit_exchange_score" jdbcType="INTEGER"/>
+    <result property="currency" column="currency" jdbcType="VARCHAR"/>
+  </resultMap>
+
+  <!--查询单个-->
+  <select id="queryById" resultMap="BaseResultMap">
+    select id,
+           order_id,
+           sku_code,
+           quantity,
+           unit_price,
+           tax_amount,
+           actual_amount,
+           enabled,
+           create_time,
+           update_time,
+           unit_exchange_score,
+           currency
+    from geek.order_detail
+    where id = #{id}
+  </select>
+
+  <!--查询指定行数据-->
+  <select id="queryAllByLimit" resultMap="BaseResultMap">
+    select id,
+           order_id,
+           sku_code,
+           quantity,
+           unit_price,
+           tax_amount,
+           actual_amount,
+           enabled,
+           create_time,
+           update_time,
+           unit_exchange_score,
+           currency
+    from geek.order_detail
+    limit #{offset}, #{limit}
+  </select>
+
+  <!--通过实体作为筛选条件查询-->
+  <select id="queryAll" resultMap="BaseResultMap">
+    select
+    id, order_id, sku_code, quantity, unit_price, tax_amount, actual_amount, enabled, create_time, update_time, unit_exchange_score, currency
+    from geek.order_detail
+    <where>
+      <if test="id != null">
+        and id = #{id}
+      </if>
+      <if test="orderId != null">
+        and order_id = #{orderId}
+      </if>
+      <if test="skuCode != null and skuCode != ''">
+        and sku_code = #{skuCode}
+      </if>
+      <if test="quantity != null">
+        and quantity = #{quantity}
+      </if>
+      <if test="unitPrice != null and unitPrice != ''">
+        and unit_price = #{unitPrice}
+      </if>
+      <if test="taxAmount != null and taxAmount != ''">
+        and tax_amount = #{taxAmount}
+      </if>
+      <if test="actualAmount != null and actualAmount != ''">
+        and actual_amount = #{actualAmount}
+      </if>
+      <if test="enabled != null">
+        and enabled = #{enabled}
+      </if>
+      <if test="createTime != null">
+        and create_time = #{createTime}
+      </if>
+      <if test="updateTime != null">
+        and update_time = #{updateTime}
+      </if>
+      <if test="unitExchangeScore != null">
+        and unit_exchange_score = #{unitExchangeScore}
+      </if>
+      <if test="currency != null and currency != ''">
+        and currency = #{currency}
+      </if>
+    </where>
+  </select>
+
+  <!--新增所有列-->
+  <insert id="insert" keyProperty="id" useGeneratedKeys="true">
+    insert into geek.order_detail(id, order_id, sku_code, quantity, unit_price, tax_amount, actual_amount, enabled, create_time, update_time,
+                                  unit_exchange_score, currency)
+    values (#{id}, #{orderId}, #{skuCode}, #{quantity}, #{unitPrice}, #{taxAmount}, #{actualAmount}, #{enabled}, #{createTime}, #{updateTime},
+            #{unitExchangeScore}, #{currency})
+  </insert>
+
+  <insert id="insertBatch" keyProperty="id" useGeneratedKeys="true">
+    insert into geek.order_detail(id,order_id, sku_code, quantity, unit_price, tax_amount, actual_amount, enabled, create_time, update_time,
+    unit_exchange_score, currency)
+    values
+    <foreach collection="list" item="item" index="index" separator=",">
+      (#{item.id},#{item.orderId}, #{item.skuCode}, #{item.quantity}, #{item.unitPrice},
+      #{item.taxAmount}, #{item.actualAmount}, #{item.enabled},#{item.createTime},
+      #{item.updateTime}, #{item.unitExchangeScore}, #{item.currency})
+    </foreach>
+
+  </insert>
+
+  <!--通过主键修改数据-->
+  <update id="update">
+    update geek.order_detail
+    <set>
+      <if test="orderId != null">
+        order_id = #{orderId},
+      </if>
+      <if test="skuCode != null and skuCode != ''">
+        sku_code = #{skuCode},
+      </if>
+      <if test="quantity != null">
+        quantity = #{quantity},
+      </if>
+      <if test="unitPrice != null and unitPrice != ''">
+        unit_price = #{unitPrice},
+      </if>
+      <if test="taxAmount != null and taxAmount != ''">
+        tax_amount = #{taxAmount},
+      </if>
+      <if test="actualAmount != null and actualAmount != ''">
+        actual_amount = #{actualAmount},
+      </if>
+      <if test="enabled != null">
+        enabled = #{enabled},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime},
+      </if>
+      <if test="unitExchangeScore != null">
+        unit_exchange_score = #{unitExchangeScore},
+      </if>
+      <if test="currency != null and currency != ''">
+        currency = #{currency},
+      </if>
+    </set>
+    where id = #{id}
+  </update>
+
+  <!--通过主键删除-->
+  <delete id="deleteById">
+    delete
+    from geek.order_detail
+    where id = #{id}
+  </delete>
+
+</mapper>

@@ -543,3 +543,25 @@ create table if not exists `order`.return_order_refund
 )
     comment '逆向单退款表';
 
+
+
+
+
+
+
+create table commodity_stock
+(
+	id bigint not null comment '库存主键',
+	sku_code varchar(50) not null,
+	enabled tinyint null comment '记录是否可用 0 不可用, 1 可用',
+	stock_amount bigint null comment '库存数量',
+	create_time long not null comment '创建时间',
+	update_time Long not null comment '修改时间',
+	constraint commodity_stock_pk
+		primary key (id)
+)
+comment '商品库存表';
+
+create unique index commodity_stock_sku_code_uindex
+	on commodity_stock (sku_code);
+
