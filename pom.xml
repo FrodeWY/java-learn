@@ -15,11 +15,13 @@
         <module>mysql</module>
         <module>rpc</module>
       <module>cache</module>
+      <module>mq</module>
     </modules>
 
     <!--指定java的编译版本-->
     <properties>
         <java.version>1.8</java.version>
+      <spring.boot.version>2.4.4</spring.boot.version>
     </properties>
 
     <build>
