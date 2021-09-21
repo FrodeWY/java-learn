@@ -1,0 +1,15 @@
+spring:
+  kafka:
+    consumer:
+      group-id: consumer-group1
+      enable-auto-commit: false
+      auto-offset-reset: earliest
+      max-poll-records: 10000
+      fetch-max-wait: 5000ms
+    producer:
+      acks: all
+      retries: 3
+      batch-size: 16384
+    bootstrap-servers: localhost:9093,localhost9094,localhost9095
+
+

@@ -16,6 +16,7 @@
         <module>rpc</module>
       <module>cache</module>
       <module>mq</module>
+
     </modules>
 
     <!--指定java的编译版本-->
